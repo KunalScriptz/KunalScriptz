@@ -1,5 +1,5 @@
-# 💫 About Me:
-🐍 Python Enthusiast: I love working with Python and applying best practices to create efficient solutions.<br><br>🐳 Docker Lover: I enjoy dockerizing applications and running them in containers, making deployments smooth and scalable.<br><br>🤖 Telegram Automation: I build Telegram bots to automate tasks and streamline workflows.<br><br>🐧 Linux Shell Scripting: I like writing Linux shell scripts to automate and manage systems efficiently.<br><br>🕵️‍♂️ Selenium Automation: I have experience with Selenium for automating web testing and scraping.<br><br>🧠 Generative AI: I know how to build RAG (Retrieval-Augmented Generation) applications and work with generative AI technologies.<br><br>🛠️ Best Practices Advocate: I always strive to implement the best practices in Python, Docker, and any technology I use.<br><br>🔗 API Enthusiast: I have a passion for working with APIs, building integrations, and optimizing workflows.
+<p align="center">
+<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&duration=3000&pause=500&background=28FF3400&center=true&vCenter=true&width=435&lines=Hi%F0%9F%91%8B+I+am+Kunal.;Data+Scientist;Gen+AI+Developer;Automation+Enthusiast;Building+Intelligent+Systems;Crafting+AI+Pipelines;Lover+of+Clean+Code" alt="Typing SVG" /></a>
 
 
 ## 🌐 Socials:
