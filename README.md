@@ -1,5 +1,10 @@
 <p align="center">
+<img src="Github-banner.JPG" alt="GitHub Banner">
+</p>
+
+<p align="center">
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&duration=3000&pause=500&background=28FF3400&center=true&vCenter=true&width=435&lines=Hi%F0%9F%91%8B+I+am+Kunal.;Data+Scientist;Gen+AI+Developer;Automation+Enthusiast;Building+Intelligent+Systems;Crafting+AI+Pipelines;Lover+of+Clean+Code" alt="Typing SVG" /></a>
+
 
 
 ## 🌐 Socials:
