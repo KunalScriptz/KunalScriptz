@@ -22,13 +22,14 @@ ASSETS = os.path.join(HERE, "..", "assets")
 BIO = {
     "user_at_host": "kunal@admin",
     "OS": "Windows 11, Android 16, Ubuntu Linux",
-    "Host": "Worley",
+    "Host": "Worley India Private Limited",
     "Kernel": "Data Scientist / AI Engineer",
+    "IDE": "VSCode 1.128",
     "Languages.Programming": "Python, Shell Script, PowerShell",
     "Languages.Computer": "HTML, CSS, YAML, Markdown",
     "Languages.Real": "English",
-    "Hobbies.Software": "Rooting Android devices, Xposed Framework, console jailbreaking (educational)",
-    "Hobbies.Hardware": "Overclocking GPU for best performance",
+    "Hobbies.Software": "Android modding, custom ROMs, rclone",
+    "Hobbies.Hardware": "GPU overclocking",
     "Email": "kunal1520018@gmail.com",
     "LinkedIn": "kunal152001",
     "Medium": "@kunal1520018",
@@ -137,8 +138,8 @@ def build_combined_svg(mode, stats):
 
     ART_NATIVE_W, ART_NATIVE_H = 1188, 742
     FONT_SIZE = 26
-    LINE_H = 34
-    PAD = 34
+    LINE_H = 40
+    PAD = 40
 
     lines = []
     lines.append((BIO["user_at_host"], "header"))
@@ -147,6 +148,7 @@ def build_combined_svg(mode, stats):
     lines.append((_dotted_line("Uptime", _uptime_string()), "kv"))
     lines.append((_dotted_line("Host", BIO["Host"]), "kv"))
     lines.append((_dotted_line("Kernel", BIO["Kernel"]), "kv"))
+    lines.append((_dotted_line("IDE", BIO["IDE"]), "kv"))
     lines.append(("", "blank"))
     lines.append((_dotted_line("Languages.Programming", BIO["Languages.Programming"]), "kv"))
     lines.append((_dotted_line("Languages.Computer", BIO["Languages.Computer"]), "kv"))
@@ -170,13 +172,19 @@ def build_combined_svg(mode, stats):
     # Scale the art to fill the panel's height (rather than an arbitrary
     # fixed width), so it reads at a comparable size to the text next to it.
     available_art_h = panel_height - PAD * 2
-    scale = min(available_art_h / ART_NATIVE_H, 1.0)
+    scale = available_art_h / ART_NATIVE_H
     art_col_w = ART_NATIVE_W * scale
     art_col_h = ART_NATIVE_H * scale
 
     PANEL_X = art_col_w + PAD * 2
     total_height = panel_height
-    total_width = PANEL_X + 720
+
+    # Calculate text panel width from the longest line instead of hardcoding 720.
+    # JetBrains Mono char width ≈ 0.6 × font-size; add safety margin.
+    char_w = FONT_SIZE * 0.65
+    longest_text = max(len(t[0]) for t in lines)
+    text_panel_w = max(720, int(longest_text * char_w) + 200)
+    total_width = PANEL_X + text_panel_w
 
     def render_kv_line(text, y):
         if ":" in text:
