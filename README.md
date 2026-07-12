@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/KunalScriptz.png" alt="KunalScriptz" width="200" height="200">
+<img src="Kunal K - Cover Image.png" alt="GitHub Banner">
 </p>
 
 <!-- Auto-updating profile card: ascii art + live GitHub stats.
