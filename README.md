@@ -1,11 +1,5 @@
 <p align="center">
-<img src="Kunal K - Cover Image.png" alt="GitHub Banner">
-</p>
-
-<!-- Auto-updating profile card: ascii art + live GitHub stats.
-     Refreshed daily by .github/workflows/update-readme.yml -->
-<p align="center">
-  <img alt="Kunal's GitHub profile card" src="light_mode.svg">
+<img src="light_mode.svg" alt="KunalScriptz Profile Card" width="600">
 </p>
 
 <p align="center">
