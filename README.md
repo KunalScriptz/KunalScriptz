@@ -7,6 +7,10 @@
 
 
 
+<p align="center">
+<img src="ascii-light.svg" alt="Kunal ASCII Art">
+</p>
+
 ## 🌐 Socials:
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/kunal152001) [![Medium](https://img.shields.io/badge/Medium-12100E?logo=medium&logoColor=white)](https://medium.com/@kunal1520018) [![email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:kunal1520018@gmail.com) 
 
