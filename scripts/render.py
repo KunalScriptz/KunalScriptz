@@ -210,7 +210,7 @@ def build_combined_svg(mode, stats):
             text_tspans.append(render_kv_line(text, y))
         y += LINE_H
 
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total_width:.0f} {total_height:.0f}" role="img" aria-label="{_escape(BIO['user_at_host'])} github profile card">
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{total_width:.0f}" height="{total_height:.0f}" viewBox="0 0 {total_width:.0f} {total_height:.0f}" role="img" aria-label="{_escape(BIO['user_at_host'])} github profile card">
   <style>
     .bgrect {{ fill: {palette['bg']}; }}
     .hdr {{ fill: {palette['header']}; font-weight: 600; }}
