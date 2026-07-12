@@ -20,7 +20,7 @@ ASSETS = os.path.join(HERE, "..", "assets")
 # Everything under GitHub Stats is computed automatically by today.py instead.
 # ---------------------------------------------------------------------------
 BIO = {
-    "user_at_host": "kunal@worley",
+    "user_at_host": "kunal@admin",
     "OS": "Windows 11, Android 16, Ubuntu Linux",
     "Host": "Worley",
     "Kernel": "Data Scientist / AI Engineer",
