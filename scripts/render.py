@@ -136,9 +136,9 @@ def build_combined_svg(mode, stats):
     art_text_block = _extract_ascii_text_block(ascii_path)
 
     ART_NATIVE_W, ART_NATIVE_H = 1188, 742
-    FONT_SIZE = 15
-    LINE_H = 20.5
-    PAD = 20
+    FONT_SIZE = 19
+    LINE_H = 26
+    PAD = 26
 
     lines = []
     lines.append((BIO["user_at_host"], "header"))
