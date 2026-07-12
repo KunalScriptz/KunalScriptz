@@ -135,13 +135,7 @@ def build_combined_svg(mode, stats):
     ascii_path = os.path.join(ASSETS, f"ascii-{mode}.svg")
     art_text_block = _extract_ascii_text_block(ascii_path)
 
-    # Scale the (large) ascii art down into a fixed-width left column.
     ART_NATIVE_W, ART_NATIVE_H = 1188, 742
-    ART_COL_W = 460
-    scale = ART_COL_W / ART_NATIVE_W
-    art_col_h = ART_NATIVE_H * scale
-
-    PANEL_X = ART_COL_W + 40
     FONT_SIZE = 15
     LINE_H = 20.5
     PAD = 20
@@ -172,7 +166,16 @@ def build_combined_svg(mode, stats):
         lines.append((l, "kv"))
 
     panel_height = PAD * 2 + len(lines) * LINE_H
-    total_height = max(panel_height, art_col_h + PAD * 2)
+
+    # Scale the art to fill the panel's height (rather than an arbitrary
+    # fixed width), so it reads at a comparable size to the text next to it.
+    available_art_h = panel_height - PAD * 2
+    scale = min(available_art_h / ART_NATIVE_H, 1.0)
+    art_col_w = ART_NATIVE_W * scale
+    art_col_h = ART_NATIVE_H * scale
+
+    PANEL_X = art_col_w + PAD * 2
+    total_height = panel_height
     total_width = PANEL_X + 720
 
     def render_kv_line(text, y):
