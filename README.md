@@ -5,11 +5,7 @@
 <!-- Auto-updating profile card: ascii art + live GitHub stats.
      Refreshed daily by .github/workflows/update-readme.yml -->
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg">
-    <source media="(prefers-color-scheme: light)" srcset="light_mode.svg">
-    <img alt="Kunal's GitHub profile card" src="light_mode.svg">
-  </picture>
+  <img alt="Kunal's GitHub profile card" src="light_mode.svg">
 </p>
 
 <p align="center">
