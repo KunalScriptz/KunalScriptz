@@ -1,0 +1,47 @@
+name: Update profile stats card
+
+on:
+  schedule:
+    # Runs once a day at 03:15 UTC. Cloning every repo to count LOC is the
+    # slow step (cache keeps re-runs cheap), so don't run this too often.
+    - cron: "15 3 * * *"
+  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab
+  push:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - "assets/**"
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Generate stats + SVGs
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_ACTOR: ${{ github.repository_owner }}
+          AUTHOR_EMAILS: ${{ secrets.AUTHOR_EMAILS }}
+        run: python scripts/today.py
+
+      - name: Commit updated SVGs + cache
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add light_mode.svg dark_mode.svg cache/
+          git diff --quiet --cached || git commit -m "chore: refresh profile stats card"
+          git push
