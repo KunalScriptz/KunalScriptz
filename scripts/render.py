@@ -137,12 +137,9 @@ def build_combined_svg(mode, stats):
     art_text_block = _extract_ascii_text_block(ascii_path)
 
     ART_NATIVE_W, ART_NATIVE_H = 1188, 742
-    FONT_SIZE = 14
-    LINE_H = 20
-    PAD = 14
-    # GitHub README column is ~880px; aim for 980px SVG so it renders
-    # at native pixel size without browser scaling.
-    CONTENT_W = 952   # 980 - 2 × PAD
+    FONT_SIZE = 18
+    LINE_H = 26
+    PAD = 18
 
     lines = []
     lines.append((BIO["user_at_host"], "header"))
@@ -170,18 +167,26 @@ def build_combined_svg(mode, stats):
     for l in build_stats_lines(stats):
         lines.append((l, "kv"))
 
-    # Vertical layout: ASCII art on top (full width), text panel below.
-    # Scale the art to fill the content width, maintain aspect ratio.
-    scale = CONTENT_W / ART_NATIVE_W
+    panel_height = PAD * 2 + len(lines) * LINE_H
+
+    # Left-to-right: art gets a fixed column width, vertically centered.
+    # Text panel fills the rest, sized to fit the longest line.
+    ART_COL_W = 650
+    scale = ART_COL_W / ART_NATIVE_W
     art_col_w = ART_NATIVE_W * scale
     art_col_h = ART_NATIVE_H * scale
 
-    # Text starts below the art, with a padding gap between them.
-    TEXT_X = PAD
-    text_start_y = PAD + art_col_h + PAD
+    # Vertically center the art within the text panel height.
+    art_y_offset = max(0, (panel_height - art_col_h) / 2)
 
-    total_width = CONTENT_W + PAD * 2
-    total_height = text_start_y + len(lines) * LINE_H + PAD
+    PANEL_X = art_col_w + PAD * 2
+    total_height = max(panel_height, art_col_h + PAD * 2)
+
+    # Text panel width from the longest line.
+    char_w = FONT_SIZE * 0.65
+    longest_text = max(len(t[0]) for t in lines)
+    text_panel_w = max(680, int(longest_text * char_w) + 120)
+    total_width = PANEL_X + text_panel_w
 
     def render_kv_line(text, y):
         if ":" in text:
@@ -189,24 +194,24 @@ def build_combined_svg(mode, stats):
             m = re.match(r"([\s.]*)(.*)", rest)
             dots, value = m.group(1), m.group(2)
             return (
-                f'<tspan x="{TEXT_X}" y="{y:.2f}">'
+                f'<tspan x="{PANEL_X}" y="{y:.2f}">'
                 f'<tspan class="lbl">{_escape(label)}:</tspan>'
                 f'<tspan class="dim">{_escape(dots)}</tspan>'
                 f'<tspan class="val">{_escape(value)}</tspan>'
                 f"</tspan>"
             )
-        return f'<tspan x="{TEXT_X}" y="{y:.2f}" class="val">{_escape(text)}</tspan>'
+        return f'<tspan x="{PANEL_X}" y="{y:.2f}" class="val">{_escape(text)}</tspan>'
 
     text_tspans = []
-    y = text_start_y + FONT_SIZE
+    y = PAD + FONT_SIZE
     for text, kind in lines:
         if kind == "header":
             text_tspans.append(
-                f'<tspan x="{TEXT_X}" y="{y:.2f}" class="hdr">{_escape(text)}</tspan>'
+                f'<tspan x="{PANEL_X}" y="{y:.2f}" class="hdr">{_escape(text)}</tspan>'
             )
         elif kind == "dim":
             text_tspans.append(
-                f'<tspan x="{TEXT_X}" y="{y:.2f}" class="dim">{_escape(text)}</tspan>'
+                f'<tspan x="{PANEL_X}" y="{y:.2f}" class="dim">{_escape(text)}</tspan>'
             )
         elif kind == "blank":
             pass
@@ -225,7 +230,7 @@ def build_combined_svg(mode, stats):
     text {{ font-family: {FONT_STACK}; }}
   </style>
   <rect class="bgrect" x="0" y="0" width="{total_width:.0f}" height="{total_height:.0f}" rx="10"/>
-  <g transform="translate({PAD},{PAD}) scale({scale:.5f})">
+  <g transform="translate({PAD},{PAD + art_y_offset:.0f}) scale({scale:.5f})">
     {art_text_block}
   </g>
   <text xml:space="preserve" font-size="{FONT_SIZE}">
