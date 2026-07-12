@@ -1,5 +1,5 @@
 <p align="center">
-<img src="light_mode.svg" alt="KunalScriptz Profile Card">
+<img src="light_mode.svg" alt="KunalScriptz Profile Card" width="100%">
 </p>
 
 <p align="center">
