@@ -19,9 +19,8 @@
 
 
 # 📊 GitHub Stats:
-![](https://github-readme-stats.vercel.app/api?username=KunalScriptz&theme=nightowl&hide_border=false&include_all_commits=false&count_private=false)<br/>
-![](https://github-readme-streak-stats.herokuapp.com/?user=KunalScriptz&theme=nightowl&hide_border=false)<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=KunalScriptz&hide=javascript,css,scss,XSLT,Typescript,html&theme=nightowl)
+![](streak-light.svg)<br/>
+![](top-langs-light.svg)
 
 ## 🏆 GitHub Trophies
 ![](trophies-light.svg)

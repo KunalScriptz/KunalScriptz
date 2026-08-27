@@ -24,7 +24,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import requests
 
@@ -181,6 +181,107 @@ def fetch_social_counts():
     }
 
 
+# Languages excluded from the top-languages card (matches the previous README
+# `hide=` list). Matching is case-insensitive.
+HIDDEN_LANGS = {"javascript", "css", "scss", "xslt", "typescript", "html"}
+
+
+# ---------------------------------------------------------------------------
+# Streak: pull the contribution calendar year-by-year (calendar only spans
+# ~1 year per request) and derive current streak, longest streak, and the
+# all-time total contribution count.
+# ---------------------------------------------------------------------------
+def fetch_streak(created_at_iso):
+    query = """
+    query($login: String!, $from: DateTime!, $to: DateTime!) {
+      user(login: $login) {
+        contributionsCollection(from: $from, to: $to) {
+          contributionCalendar {
+            totalContributions
+            weeks { contributionDays { date contributionCount } }
+          }
+        }
+      }
+    }
+    """
+    created = datetime.fromisoformat(created_at_iso.replace("Z", "+00:00"))
+    now = datetime.now(timezone.utc)
+    counts = {}
+    total = 0
+    year_start = created
+    while year_start < now:
+        year_end = min(year_start.replace(year=year_start.year + 1), now)
+        data = gql(
+            query,
+            {"login": USERNAME, "from": year_start.isoformat(), "to": year_end.isoformat()},
+        )["user"]["contributionsCollection"]["contributionCalendar"]
+        total += data["totalContributions"]
+        for week in data["weeks"]:
+            for d in week["contributionDays"]:
+                counts[d["date"]] = d["contributionCount"]
+        year_start = year_end
+
+    # Current streak ends today — or yesterday if today has no contributions yet.
+    today = date.today()
+    current = 0
+    d = today
+    if counts.get(d.isoformat(), 0) == 0:
+        d -= timedelta(days=1)
+    while counts.get(d.isoformat(), 0) > 0:
+        current += 1
+        d -= timedelta(days=1)
+
+    longest = 0
+    if counts:
+        run = 0
+        d = date.fromisoformat(min(counts))
+        end = date.fromisoformat(max(counts))
+        while d <= end:
+            if counts.get(d.isoformat(), 0) > 0:
+                run += 1
+                longest = max(longest, run)
+            else:
+                run = 0
+            d += timedelta(days=1)
+
+    return {"current": current, "longest": longest, "total": total}
+
+
+# ---------------------------------------------------------------------------
+# Top languages: sum per-language byte counts (RepositoryLanguages edges)
+# across all owned, non-fork repos, drop the HIDDEN_LANGS, and return the
+# top `limit` by share.
+# ---------------------------------------------------------------------------
+def fetch_top_languages(limit=6):
+    query = """
+    query($login: String!, $after: String) {
+      user(login: $login) {
+        repositories(ownerAffiliations: OWNER, isFork: false, first: 100, after: $after) {
+          nodes { languages(first: 20) { edges { size node { name } } } }
+          pageInfo { hasNextPage endCursor }
+        }
+      }
+    }
+    """
+    totals = {}
+    after = None
+    while True:
+        data = gql(query, {"login": USERNAME, "after": after})["user"]["repositories"]
+        for n in data["nodes"]:
+            for e in (n["languages"] or {}).get("edges", []) or []:
+                if e and e.get("node"):
+                    name = e["node"]["name"]
+                    totals[name] = totals.get(name, 0) + e["size"]
+        if not data["pageInfo"]["hasNextPage"]:
+            break
+        after = data["pageInfo"]["endCursor"]
+
+    totals = {name: size for name, size in totals.items() if name.lower() not in HIDDEN_LANGS}
+    grand = sum(totals.values()) or 1
+    ranked = sorted(totals.items(), key=lambda kv: -kv[1])[:limit]
+    return [{"name": name, "bytes": size, "percent": size / grand * 100.0} for name, size in ranked]
+
+
 # ---------------------------------------------------------------------------
 # Lines of code: clone every owned + contributed repo and sum `git log
 # --numstat` for the configured author emails. Cached per-repo by HEAD sha
@@ -280,6 +381,8 @@ def main():
     stars, language_count = fetch_repo_aggregates()
     commits, reviews = fetch_contribution_totals(basics["createdAt"])
     social = fetch_social_counts()
+    streak = fetch_streak(basics["createdAt"])
+    top_langs = fetch_top_languages()
     repos = list_all_repo_urls()
 
     print(f"Scanning {len(repos)} repos for line-of-code stats "
@@ -324,6 +427,18 @@ def main():
         with open(trophy_path, "w", encoding="utf-8") as f:
             f.write(trophy_svg)
         print(f"Wrote {trophy_path}")
+
+        streak_svg = render.build_streak_svg(mode, streak)
+        streak_path = os.path.join(out_dir, f"streak-{mode}.svg")
+        with open(streak_path, "w", encoding="utf-8") as f:
+            f.write(streak_svg)
+        print(f"Wrote {streak_path}")
+
+        langs_svg = render.build_top_langs_svg(mode, top_langs)
+        langs_path = os.path.join(out_dir, f"top-langs-{mode}.svg")
+        with open(langs_path, "w", encoding="utf-8") as f:
+            f.write(langs_svg)
+        print(f"Wrote {langs_path}")
 
 
 if __name__ == "__main__":

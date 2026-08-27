@@ -441,6 +441,105 @@ def build_trophies_svg(mode, trophy_stats):
 </svg>'''
 
 
+# ---------------------------------------------------------------------------
+# GitHub streak card + top-languages bar chart — self-hosted replacements for
+# the retired github-readme-streak-stats / github-readme-stats services.
+# ---------------------------------------------------------------------------
+
+# Canonical GitHub language colours (subset), plus a neutral fallback.
+LANG_COLORS = {
+    "Python": "#3572A5",
+    "Jupyter Notebook": "#DA5B0B",
+    "JavaScript": "#f1e05a",
+    "TypeScript": "#3178c6",
+    "HTML": "#e34c26",
+    "CSS": "#563d7c",
+    "SCSS": "#c6538c",
+    "Shell": "#89e051",
+    "Dockerfile": "#384d54",
+    "TeX": "#3D6117",
+    "PLpgSQL": "#336790",
+    "Makefile": "#427819",
+    "Mako": "#7e858d",
+    "XSLT": "#EB8CEB",
+    "Markdown": "#083fa1",
+    "_default": "#8b949e",
+}
+
+
+def _streak_svg_style(palette):
+    return (
+        f".bgrect {{ fill: {palette['bg']}; }} "
+        f".hdr {{ fill: {palette['header']}; font-weight: 600; }} "
+        f".val {{ fill: {palette['value']}; }} "
+        f".dim {{ fill: {palette['dim']}; }} "
+        f"text {{ font-family: {FONT_STACK}; }}"
+    )
+
+
+def build_streak_svg(mode, streak):
+    palette = COLORS[mode]
+    W, H = 520, 130
+    blocks = [
+        ("Total Contributions", f"{streak['total']:,}"),
+        ("Current Streak", f"{streak['current']} day{'s' if streak['current'] != 1 else ''}"),
+        ("Longest Streak", f"{streak['longest']} day{'s' if streak['longest'] != 1 else ''}"),
+    ]
+    xs = (130, 260, 390)
+    parts = [
+        f'<rect class="bgrect" x="0" y="0" width="{W}" height="{H}" rx="10"/>',
+        f'<text x="18" y="34" class="hdr" font-size="16">🔥 GitHub Streak</text>',
+    ]
+    for (label, value), cx in zip(blocks, xs):
+        parts.append(
+            f'<text x="{cx}" y="78" text-anchor="middle" class="val" '
+            f'font-size="26" font-weight="700">{value}</text>'
+        )
+        parts.append(
+            f'<text x="{cx}" y="100" text-anchor="middle" class="dim" '
+            f'font-size="11">{label}</text>'
+        )
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="GitHub streak">
+  <style>{_streak_svg_style(palette)}</style>
+  {''.join(parts)}
+</svg>'''
+
+
+def build_top_langs_svg(mode, langs):
+    palette = COLORS[mode]
+    W = 460
+    NAME_X, BAR_X, BAR_W, BAR_H, PCT_X, ROW_H, TOP_Y = 16, 158, 210, 12, 444, 30, 46
+    n = len(langs)
+    H = 26 + ROW_H * n + 12
+    max_pct = max((l["percent"] for l in langs), default=1) or 1
+    parts = [
+        f'<rect class="bgrect" x="0" y="0" width="{W}" height="{H}" rx="10"/>',
+        f'<text x="16" y="26" class="hdr" font-size="16">Top Languages</text>',
+    ]
+    for i, l in enumerate(langs):
+        name = l["name"]
+        if len(name) > 16:
+            name = name[:15] + "…"
+        color = LANG_COLORS.get(l["name"], LANG_COLORS["_default"])
+        bar_w = max(2, round(BAR_W * l["percent"] / max_pct))
+        y_bar = TOP_Y - 12 + i * ROW_H
+        y_txt = TOP_Y + i * ROW_H
+        parts.append(
+            f'<text x="{NAME_X}" y="{y_txt}" class="val" font-size="13">{_escape(name)}</text>'
+        )
+        parts.append(
+            f'<rect x="{BAR_X}" y="{y_bar}" width="{bar_w}" height="{BAR_H}" rx="3" fill="{color}"/>'
+        )
+        parts.append(
+            f'<text x="{PCT_X}" y="{y_txt}" text-anchor="end" class="dim" '
+            f'font-size="12">{l["percent"]:.1f}%</text>'
+        )
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Top languages">
+  <style>{_streak_svg_style(palette)}</style>
+  {''.join(parts)}
+</svg>'''
+
+
 if __name__ == "__main__":
     # Quick local preview with placeholder numbers, so you can see the
     # layout before wiring up the real GitHub Action.
@@ -459,6 +558,15 @@ if __name__ == "__main__":
         "pull_requests": 34, "repositories": 95, "reviews": 5,
         "languages": 14, "organizations": 2, "created_at": "2021-01-01T00:00:00Z",
     }
+    demo_streak = {"current": 3, "longest": 12, "total": 1487}
+    demo_langs = [
+        {"name": "Jupyter Notebook", "bytes": 5266111, "percent": 76.1},
+        {"name": "Python", "bytes": 1368564, "percent": 19.8},
+        {"name": "PLpgSQL", "bytes": 27051, "percent": 0.4},
+        {"name": "TeX", "bytes": 18170, "percent": 0.3},
+        {"name": "Shell", "bytes": 9966, "percent": 0.1},
+        {"name": "Dockerfile", "bytes": 9599, "percent": 0.1},
+    ]
     out_dir = os.path.join(HERE, "..")
     for mode in ("light", "dark"):
         svg = build_combined_svg(mode, demo_stats)
@@ -467,4 +575,10 @@ if __name__ == "__main__":
         trophy_svg = build_trophies_svg(mode, demo_trophy_stats)
         with open(os.path.join(out_dir, f"trophies-{mode}.svg"), "w", encoding="utf-8") as f:
             f.write(trophy_svg)
-    print("Wrote light_mode.svg, dark_mode.svg and trophies-*.svg with placeholder stats.")
+        streak_svg = build_streak_svg(mode, demo_streak)
+        with open(os.path.join(out_dir, f"streak-{mode}.svg"), "w", encoding="utf-8") as f:
+            f.write(streak_svg)
+        langs_svg = build_top_langs_svg(mode, demo_langs)
+        with open(os.path.join(out_dir, f"top-langs-{mode}.svg"), "w", encoding="utf-8") as f:
+            f.write(langs_svg)
+    print("Wrote light_mode.svg, dark_mode.svg, trophies-*.svg, streak-*.svg and top-langs-*.svg with placeholder stats.")

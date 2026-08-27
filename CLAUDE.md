@@ -30,7 +30,7 @@ cache/              # Per-repo JSON files with {sha, added, deleted} to skip
                     # commits updated SVGs + cache back.
 ```
 
-**Data flow:** `today.py` → stats dict → `render.build_combined_svg(mode, stats)` → `light_mode.svg` / `dark_mode.svg` → embedded in README.md. Same run also produces `trophies-light.svg` / `trophies-dark.svg` via `render.build_trophies_svg(mode, trophy_stats)` — a self-hosted replacement for the retired `github-profile-trophy` service.
+**Data flow:** `today.py` → stats dict → `render.build_combined_svg(mode, stats)` → `light_mode.svg` / `dark_mode.svg` → embedded in README.md. The same run also produces `trophies-light.svg` / `trophies-dark.svg` (`render.build_trophies_svg`), `streak-light.svg` / `streak-dark.svg` (`render.build_streak_svg`), and `top-langs-light.svg` / `top-langs-dark.svg` (`render.build_top_langs_svg`) — self-hosted replacements for the retired `github-profile-trophy`, `github-readme-streak-stats`, and `github-readme-stats` services.
 
 ## Commands
 
@@ -40,7 +40,7 @@ cache/              # Per-repo JSON files with {sha, added, deleted} to skip
 cd scripts && python render.py
 ```
 
-This writes `light_mode.svg`, `dark_mode.svg`, `trophies-light.svg`, and `trophies-dark.svg` to the repo root using hardcoded demo numbers — no GitHub token needed. Useful for iterating on layout, colors, or BIO fields in `render.py`.
+This writes `light_mode.svg`, `dark_mode.svg`, `trophies-*.svg`, `streak-*.svg`, and `top-langs-*.svg` to the repo root using hardcoded demo numbers — no GitHub token needed. Useful for iterating on layout, colors, or BIO fields in `render.py`.
 
 ### Generate SVGs with real stats (needs PAT)
 
