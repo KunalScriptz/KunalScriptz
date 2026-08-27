@@ -52,6 +52,7 @@ COLORS = {
         "value": "#1a1a1a",
         "header": "#0969da",
         "dim": "#6e7781",
+        "border": "#d0d7de",
     },
     "dark": {
         "bg": "#0d1117",
@@ -59,6 +60,7 @@ COLORS = {
         "value": "#e6edf3",
         "header": "#39d98a",
         "dim": "#7d8590",
+        "border": "#30363d",
     },
 }
 
@@ -240,6 +242,205 @@ def build_combined_svg(mode, stats):
     return svg
 
 
+# ---------------------------------------------------------------------------
+# GitHub Trophies — a self-contained reimplementation of the retired
+# github-profile-trophy service, so the README never depends on a third party.
+# today.py supplies the raw metrics; this module knows the rank thresholds.
+# ---------------------------------------------------------------------------
+
+# Highest-first display order (matches the upstream RANK_ORDER enum).
+RANK_DISPLAY_ORDER = ["SECRET", "SSS", "SS", "S", "AAA", "AA", "A", "B", "C", "?"]
+
+# Rank badge colours, keyed by the first character of the rank (or "SECRET"/"?").
+RANK_COLORS = {
+    "light": {
+        "SECRET": "#8250df",
+        "S": "#b58900",
+        "A": "#1a7f37",
+        "B": "#0969da",
+        "C": "#6e7781",
+        "?": "#6e7781",
+    },
+    "dark": {
+        "SECRET": "#bc8cff",
+        "S": "#e3b341",
+        "A": "#39d98a",
+        "B": "#58a6ff",
+        "C": "#7d8590",
+        "?": "#7d8590",
+    },
+}
+
+# The seven always-visible trophies. Each is (title, metric key, rank
+# conditions). Conditions are listed highest-first: [(rank, threshold,
+# message), ...]. Thresholds/messages are copied from the upstream project.
+_BASE_TROPHIES = [
+    ("Stars", "stars", [
+        ("SSS", 2000, "Super Stargazer"), ("SS", 700, "High Stargazer"),
+        ("S", 200, "Stargazer"), ("AAA", 100, "Super Star"),
+        ("AA", 50, "High Star"), ("A", 30, "You are a Star"),
+        ("B", 10, "Middle Star"), ("C", 1, "First Star"),
+    ]),
+    ("Commits", "commits", [
+        ("SSS", 4000, "God Committer"), ("SS", 2000, "Deep Committer"),
+        ("S", 1000, "Super Committer"), ("AAA", 500, "Ultra Committer"),
+        ("AA", 200, "Hyper Committer"), ("A", 100, "High Committer"),
+        ("B", 10, "Middle Committer"), ("C", 1, "First Commit"),
+    ]),
+    ("Followers", "followers", [
+        ("SSS", 1000, "Super Celebrity"), ("SS", 400, "Ultra Celebrity"),
+        ("S", 200, "Hyper Celebrity"), ("AAA", 100, "Famous User"),
+        ("AA", 50, "Active User"), ("A", 20, "Dynamic User"),
+        ("B", 10, "Many Friends"), ("C", 1, "First Friend"),
+    ]),
+    ("Issues", "issues", [
+        ("SSS", 1000, "God Issuer"), ("SS", 500, "Deep Issuer"),
+        ("S", 200, "Super Issuer"), ("AAA", 100, "Ultra Issuer"),
+        ("AA", 50, "Hyper Issuer"), ("A", 20, "High Issuer"),
+        ("B", 10, "Middle Issuer"), ("C", 1, "First Issue"),
+    ]),
+    ("PullRequest", "pull_requests", [
+        ("SSS", 1000, "God Puller"), ("SS", 500, "Deep Puller"),
+        ("S", 200, "Super Puller"), ("AAA", 100, "Ultra Puller"),
+        ("AA", 50, "Hyper Puller"), ("A", 20, "High Puller"),
+        ("B", 10, "Middle Puller"), ("C", 1, "First Pull"),
+    ]),
+    ("Repositories", "repositories", [
+        ("SSS", 50, "God Repo Creator"), ("SS", 45, "Deep Repo Creator"),
+        ("S", 40, "Super Repo Creator"), ("AAA", 35, "Ultra Repo Creator"),
+        ("AA", 30, "Hyper Repo Creator"), ("A", 20, "High Repo Creator"),
+        ("B", 10, "Middle Repo Creator"), ("C", 1, "First Repository"),
+    ]),
+    ("Reviews", "reviews", [
+        ("SSS", 70, "God Reviewer"), ("SS", 57, "Deep Reviewer"),
+        ("S", 45, "Super Reviewer"), ("AAA", 30, "Ultra Reviewer"),
+        ("AA", 20, "Hyper Reviewer"), ("A", 8, "Active Reviewer"),
+        ("B", 3, "Intermediate Reviewer"), ("C", 1, "New Reviewer"),
+    ]),
+]
+
+# "Experience" is not hidden, but the upstream project groups it with the
+# secret trophies. Its metric is account age in hundreds-of-days units.
+_EXPERIENCE_CONDITIONS = [
+    ("SSS", 70, "Seasoned Veteran"), ("SS", 55, "Grandmaster"),
+    ("S", 40, "Master Dev"), ("AAA", 28, "Expert Dev"),
+    ("AA", 18, "Experienced Dev"), ("A", 11, "Intermediate Dev"),
+    ("B", 6, "Junior Dev"), ("C", 2, "Newbie"),
+]
+
+
+def _rank_for(score, conditions):
+    """Return (rank, message) for the first (highest) condition the score meets."""
+    for rank, threshold, message in conditions:
+        if score >= threshold:
+            return rank, message
+    return "?", "Unknown"
+
+
+def _make_trophy(title, score, conditions, hidden=False, label=None):
+    rank, message = _rank_for(score, conditions)
+    return {
+        "title": title, "score": score, "rank": rank, "message": message,
+        "hidden": hidden, "count_label": label,
+    }
+
+
+def _account_age_stats(created_at_iso):
+    from datetime import date, datetime
+    created = datetime.fromisoformat(created_at_iso.replace("Z", "+00:00")).date()
+    today = date.today()
+    total_days = (today - created).days
+    years = today.year - created.year - ((today.month, today.day) < (created.month, created.day))
+    return {
+        "duration_years": years,
+        "duration_days": total_days // 100,  # upstream uses floor(days / 100)
+        "ancient": 1 if created.year <= 2010 else 0,
+        "og": 1 if created.year <= 2008 else 0,
+        "joined2020": 1 if created.year == 2020 else 0,
+    }
+
+
+def _build_trophy_list(ts):
+    trophies = [_make_trophy(title, ts[key], conds) for title, key, conds in _BASE_TROPHIES]
+
+    # AllSuperRank: every base trophy (Stars..Reviews) is an S-rank.
+    all_s = 1 if all(t["rank"].startswith("S") for t in trophies) else 0
+
+    trophies.append(_make_trophy("Experience", ts["duration_days"], _EXPERIENCE_CONDITIONS))
+
+    secret = [
+        ("AllSuperRank", all_s, [("SECRET", 1, "S Rank Hacker")], "All S Rank"),
+        ("MultiLanguage", ts["languages"], [("SECRET", 10, "Rainbow Lang User")], None),
+        ("LongTimeUser", ts["duration_years"], [("SECRET", 10, "Village Elder")], None),
+        ("AncientUser", ts["ancient"], [("SECRET", 1, "Ancient User")], "Before 2010"),
+        ("OGUser", ts["og"], [("SECRET", 1, "OG User")], "Joined 2008"),
+        ("Joined2020", ts["joined2020"], [("SECRET", 1, "Everything started...")], "Joined 2020"),
+        ("Organizations", ts["organizations"], [("SECRET", 3, "Jack of all Trades")], None),
+    ]
+    for title, score, conds, label in secret:
+        trophies.append(_make_trophy(title, score, conds, hidden=True, label=label))
+    return trophies
+
+
+def _trophy_card(t, ox, oy, panel, rank_colors):
+    cx = ox + panel / 2
+    first = "SECRET" if t["rank"] == "SECRET" else t["rank"][0]
+    color = rank_colors.get(first, rank_colors["?"])
+    letter = "★" if t["rank"] == "SECRET" else t["rank"]
+    title = _escape(t["title"])
+    message = _escape(t["message"])
+    count = _escape(t["count_label"] if t["count_label"] else f"{t['score']:,}")
+    return (
+        f'<rect class="card" x="{ox + 0.5:.1f}" y="{oy + 0.5:.1f}" '
+        f'width="{panel - 1}" height="{panel - 1}" rx="4.5"/>'
+        f'<text class="ttl" x="{cx:.1f}" y="{oy + 21:.1f}">{title}</text>'
+        f'<circle cx="{cx:.1f}" cy="{oy + 53:.1f}" r="17" fill="none" '
+        f'stroke="{color}" stroke-width="1.5"/>'
+        f'<text class="rkg" x="{cx:.1f}" y="{oy + 59:.1f}" fill="{color}">{letter}</text>'
+        f'<text class="msg" x="{cx:.1f}" y="{oy + 89:.1f}">{message}</text>'
+        f'<text class="cnt" x="{cx:.1f}" y="{oy + 101:.1f}">{count}</text>'
+    )
+
+
+def build_trophies_svg(mode, trophy_stats):
+    assert mode in ("light", "dark")
+    palette = COLORS[mode]
+    rank_colors = RANK_COLORS[mode]
+
+    ts = dict(trophy_stats)
+    ts.update(_account_age_stats(ts.get("created_at", "")))
+
+    trophies = _build_trophy_list(ts)
+    # Hidden trophies only surface once they unlock (reach their SECRET rank).
+    trophies = [t for t in trophies if (not t["hidden"]) or t["rank"] != "?"]
+    trophies.sort(key=lambda t: RANK_DISPLAY_ORDER.index(t["rank"]))
+
+    PANEL, MARGIN, COLS = 110, 4, 8
+    n = max(1, len(trophies))
+    cols = min(COLS, n)
+    rows = (n + cols - 1) // cols
+    width = PANEL * cols + MARGIN * (cols - 1)
+    height = PANEL * rows + MARGIN * (rows - 1)
+
+    cards = []
+    for i, t in enumerate(trophies):
+        ox = (PANEL + MARGIN) * (i % cols)
+        oy = (PANEL + MARGIN) * (i // cols)
+        cards.append(_trophy_card(t, ox, oy, PANEL, rank_colors))
+
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="GitHub trophies">
+  <style>
+    .card {{ fill: {palette['bg']}; stroke: {palette['border']}; }}
+    .ttl {{ fill: {palette['value']}; font-size: 12px; font-weight: 700; }}
+    .msg {{ fill: {palette['dim']}; font-size: 9px; }}
+    .cnt {{ fill: {palette['value']}; font-size: 10px; font-weight: 700; }}
+    .rkg {{ font-size: 15px; font-weight: 800; }}
+    text {{ font-family: {FONT_STACK}; text-anchor: middle; }}
+  </style>
+  {''.join(cards)}
+</svg>'''
+
+
 if __name__ == "__main__":
     # Quick local preview with placeholder numbers, so you can see the
     # layout before wiring up the real GitHub Action.
@@ -253,9 +454,17 @@ if __name__ == "__main__":
         "loc_added": 523178,
         "loc_deleted": 76902,
     }
+    demo_trophy_stats = {
+        "stars": 342, "commits": 2116, "followers": 196, "issues": 12,
+        "pull_requests": 34, "repositories": 95, "reviews": 5,
+        "languages": 14, "organizations": 2, "created_at": "2021-01-01T00:00:00Z",
+    }
     out_dir = os.path.join(HERE, "..")
     for mode in ("light", "dark"):
         svg = build_combined_svg(mode, demo_stats)
         with open(os.path.join(out_dir, f"{mode}_mode.svg"), "w", encoding="utf-8") as f:
             f.write(svg)
-    print("Wrote light_mode.svg and dark_mode.svg with placeholder stats.")
+        trophy_svg = build_trophies_svg(mode, demo_trophy_stats)
+        with open(os.path.join(out_dir, f"trophies-{mode}.svg"), "w", encoding="utf-8") as f:
+            f.write(trophy_svg)
+    print("Wrote light_mode.svg, dark_mode.svg and trophies-*.svg with placeholder stats.")

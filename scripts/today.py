@@ -87,48 +87,59 @@ def fetch_basic_counts():
 
 
 # ---------------------------------------------------------------------------
-# Stars: sum stargazerCount across all owned, non-fork repos (paginated)
+# Stars + language count: sum stargazerCount and collect the set of unique
+# languages across all owned, non-fork repos (paginated).
 # ---------------------------------------------------------------------------
-def fetch_total_stars():
+def fetch_repo_aggregates():
     query = """
     query($login: String!, $after: String) {
       user(login: $login) {
         repositories(ownerAffiliations: OWNER, isFork: false, first: 100, after: $after) {
-          nodes { stargazerCount }
+          nodes {
+            stargazerCount
+            languages(first: 30) { nodes { name } }
+          }
           pageInfo { hasNextPage endCursor }
         }
       }
     }
     """
     total = 0
+    languages = set()
     after = None
     while True:
         data = gql(query, {"login": USERNAME, "after": after})["user"]["repositories"]
-        total += sum(n["stargazerCount"] for n in data["nodes"])
+        for n in data["nodes"]:
+            total += n["stargazerCount"]
+            for lang in ((n.get("languages") or {}).get("nodes") or []):
+                if lang and lang.get("name"):
+                    languages.add(lang["name"])
         if not data["pageInfo"]["hasNextPage"]:
             break
         after = data["pageInfo"]["endCursor"]
-    return total
+    return total, len(languages)
 
 
 # ---------------------------------------------------------------------------
-# All-time commit count: contributionsCollection only covers one year at a
-# time, so loop year-by-year from account creation to now and sum.
+# All-time commit + review count: contributionsCollection only covers one year
+# at a time, so loop year-by-year from account creation to now and sum.
 # ---------------------------------------------------------------------------
-def fetch_total_commits(created_at_iso):
+def fetch_contribution_totals(created_at_iso):
     query = """
     query($login: String!, $from: DateTime!, $to: DateTime!) {
       user(login: $login) {
         contributionsCollection(from: $from, to: $to) {
           totalCommitContributions
           restrictedContributionsCount
+          totalPullRequestReviewContributions
         }
       }
     }
     """
     created = datetime.fromisoformat(created_at_iso.replace("Z", "+00:00"))
     now = datetime.now(timezone.utc)
-    total = 0
+    commits = 0
+    reviews = 0
     year_start = created
     while year_start < now:
         year_end = min(
@@ -142,9 +153,32 @@ def fetch_total_commits(created_at_iso):
                 "to": year_end.isoformat(),
             },
         )["user"]["contributionsCollection"]
-        total += data["totalCommitContributions"] + data["restrictedContributionsCount"]
+        commits += data["totalCommitContributions"] + data["restrictedContributionsCount"]
+        reviews += data["totalPullRequestReviewContributions"]
         year_start = year_end
-    return total
+    return commits, reviews
+
+
+# ---------------------------------------------------------------------------
+# Trophy-only counts: authored issues, authored pull requests, and org
+# memberships. `totalCount` on each connection means no pagination needed.
+# ---------------------------------------------------------------------------
+def fetch_social_counts():
+    query = """
+    query($login: String!) {
+      user(login: $login) {
+        issues { totalCount }
+        pullRequests { totalCount }
+        organizations { totalCount }
+      }
+    }
+    """
+    data = gql(query, {"login": USERNAME})["user"]
+    return {
+        "issues": data["issues"]["totalCount"],
+        "pull_requests": data["pullRequests"]["totalCount"],
+        "organizations": data["organizations"]["totalCount"],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -243,8 +277,9 @@ def main():
     print(f"Fetching stats for {USERNAME} ...")
 
     basics = fetch_basic_counts()
-    stars = fetch_total_stars()
-    commits = fetch_total_commits(basics["createdAt"])
+    stars, language_count = fetch_repo_aggregates()
+    commits, reviews = fetch_contribution_totals(basics["createdAt"])
+    social = fetch_social_counts()
     repos = list_all_repo_urls()
 
     print(f"Scanning {len(repos)} repos for line-of-code stats "
@@ -263,6 +298,19 @@ def main():
     }
     print("Stats:", json.dumps(stats, indent=2))
 
+    trophy_stats = {
+        "stars": stars,
+        "commits": commits,
+        "followers": basics["followers"]["totalCount"],
+        "issues": social["issues"],
+        "pull_requests": social["pull_requests"],
+        "repositories": basics["repositories"]["totalCount"],
+        "reviews": reviews,
+        "languages": language_count,
+        "organizations": social["organizations"],
+        "created_at": basics["createdAt"],
+    }
+
     out_dir = os.path.join(HERE, "..")
     for mode in ("light", "dark"):
         svg = render.build_combined_svg(mode, stats)
@@ -270,6 +318,12 @@ def main():
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(svg)
         print(f"Wrote {out_path}")
+
+        trophy_svg = render.build_trophies_svg(mode, trophy_stats)
+        trophy_path = os.path.join(out_dir, f"trophies-{mode}.svg")
+        with open(trophy_path, "w", encoding="utf-8") as f:
+            f.write(trophy_svg)
+        print(f"Wrote {trophy_path}")
 
 
 if __name__ == "__main__":

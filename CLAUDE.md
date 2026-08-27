@@ -15,8 +15,10 @@ scripts/
                  # and dark_mode.svg. Reads cache/ for per-repo LOC SHA caching.
   render.py      # Pure SVG renderer. Takes a stats dict, produces the combined
                  # SVG. Contains the BIO dict with all static info (OS, host,
-                 # hobbies, contact links, WORK_START_DATE). Never touches the
-                 # GitHub API — it only knows how to draw.
+                 # hobbies, contact links, WORK_START_DATE). Also renders the
+                 # trophy grid (build_trophies_svg) from trophy metrics + the
+                 # rank thresholds in _BASE_TROPHIES. Never touches the GitHub
+                 # API — it only knows how to draw.
   requirements.txt  # Only dependency: requests>=2.31.0
 assets/
   ascii-light.svg   # ASCII art SVG (light theme) — embedded into the combined card
@@ -28,7 +30,7 @@ cache/              # Per-repo JSON files with {sha, added, deleted} to skip
                     # commits updated SVGs + cache back.
 ```
 
-**Data flow:** `today.py` → stats dict → `render.build_combined_svg(mode, stats)` → `light_mode.svg` / `dark_mode.svg` → embedded in README.md.
+**Data flow:** `today.py` → stats dict → `render.build_combined_svg(mode, stats)` → `light_mode.svg` / `dark_mode.svg` → embedded in README.md. Same run also produces `trophies-light.svg` / `trophies-dark.svg` via `render.build_trophies_svg(mode, trophy_stats)` — a self-hosted replacement for the retired `github-profile-trophy` service.
 
 ## Commands
 
@@ -38,7 +40,7 @@ cache/              # Per-repo JSON files with {sha, added, deleted} to skip
 cd scripts && python render.py
 ```
 
-This writes `light_mode.svg` and `dark_mode.svg` to the repo root using hardcoded demo numbers — no GitHub token needed. Useful for iterating on layout, colors, or BIO fields in `render.py`.
+This writes `light_mode.svg`, `dark_mode.svg`, `trophies-light.svg`, and `trophies-dark.svg` to the repo root using hardcoded demo numbers — no GitHub token needed. Useful for iterating on layout, colors, or BIO fields in `render.py`.
 
 ### Generate SVGs with real stats (needs PAT)
 

@@ -24,7 +24,7 @@
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=KunalScriptz&hide=javascript,css,scss,XSLT,Typescript,html&theme=nightowl)
 
 ## 🏆 GitHub Trophies
-![](https://github-profile-trophy.vercel.app/?username=KunalScriptz&theme=default&no-frame=false&no-bg=true&margin-w=4)
+![](trophies-light.svg)
 
 ### ✍️ Random Dev Quote
 ![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
