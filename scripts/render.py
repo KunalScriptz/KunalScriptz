@@ -1,7 +1,7 @@
 """
 render.py
 ---------
-Builds the combined "ascii art + neofetch stats panel" SVG in both
+Builds the combined "generated network art + neofetch stats panel" SVG in both
 light_mode.svg and dark_mode.svg flavors.
 
 This module only knows how to draw. All the *numbers* (repos, stars,
@@ -13,7 +13,6 @@ import os
 import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ASSETS = os.path.join(HERE, "..", "assets")
 
 # ---------------------------------------------------------------------------
 # Static bio fields — edit these whenever your info changes.
@@ -64,6 +63,11 @@ COLORS = {
     },
 }
 
+ART_COLORS = {
+    "light": {"edge": "#d0d7de", "node": "#0969da", "pulse": "#1a7f37", "accent": "#8250df", "dim": "#6e7781"},
+    "dark": {"edge": "#30363d", "node": "#58a6ff", "pulse": "#39d98a", "accent": "#bc8cff", "dim": "#7d8590"},
+}
+
 
 def _uptime_string():
     from datetime import date
@@ -98,19 +102,76 @@ def _escape(s):
     )
 
 
-def _extract_ascii_text_block(svg_path):
-    """Pull out just the inner <text ...>...</text> node from a generated
-    ascii-art SVG (produced by the ASCII Forge tool), so we can re-embed
-    it inside our combined canvas with our own transform/positioning."""
-    with open(svg_path, "r", encoding="utf-8") as f:
-        content = f.read()
-    match = re.search(r"(<text .*?</text>)", content, re.S)
-    if not match:
-        raise ValueError(f"Could not find <text> block in {svg_path}")
-    # Strip the fill color class so our own palette controls it instead.
-    inner = match.group(1)
-    inner = re.sub(r'class="af-fg"', 'class="art-fg"', inner)
-    return inner
+def _build_art(mode, w, h):
+    """Animated 'neural network' hero graphic (no portrait): layered nodes,
+    signal pulses flowing along the edges, and a name/title block beneath.
+    Returns (css, svg_fragment) drawn in a w x h box at the origin."""
+    pal = ART_COLORS[mode]
+    layers = [4, 7, 7, 4, 2]
+    net_h = h - 150
+    margin_x = 40
+    xs = [margin_x + i * (w - 2 * margin_x) / (len(layers) - 1) for i in range(len(layers))]
+
+    nodes = []  # per layer: list of (x, y)
+    for x, n in zip(xs, layers):
+        gap = net_h / (n + 1)
+        nodes.append([(x, gap * (j + 1) + 10) for j in range(n)])
+
+    edges, k = [], 0
+    for a, b in zip(nodes, nodes[1:]):
+        for i, (x1, y1) in enumerate(a):
+            for j, (x2, y2) in enumerate(b):
+                # deterministic pseudo-random subset so the graph feels organic
+                if (i * 7 + j * 13 + k) % 3 == 0:
+                    continue
+                k += 1
+                edges.append((x1, y1, x2, y2, (i * 5 + j * 3 + k) % 9))
+
+    parts = []
+    for x1, y1, x2, y2, d in edges:
+        parts.append(f'<line class="edge" x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}"/>')
+        parts.append(
+            f'<line class="flow" x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
+            f'style="animation-delay:{d * 0.45:.2f}s"/>'
+        )
+    for li, layer in enumerate(nodes):
+        for ni, (x, y) in enumerate(layer):
+            cls = "node-out" if li == len(nodes) - 1 else ("node-in" if li == 0 else "node")
+            delay = (li * 0.5 + ni * 0.23) % 3
+            parts.append(f'<circle class="halo {cls}" cx="{x:.1f}" cy="{y:.1f}" r="11" style="animation-delay:{delay:.2f}s"/>')
+            parts.append(f'<circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="5.5"/>')
+
+    ty = net_h + 62
+    labels = "".join(
+        f'<text class="cap" x="{x:.0f}" y="{net_h + 22:.0f}" text-anchor="middle">{t}</text>'
+        for x, t in zip((xs[0], xs[2], xs[-1]), ("data", "models", "impact"))
+    )
+    title = (
+        f'<text class="big" x="{w / 2:.0f}" y="{ty + 22:.0f}" text-anchor="middle">KUNAL</text>'
+        f'<text class="sub" x="{w / 2:.0f}" y="{ty + 54:.0f}" text-anchor="middle">'
+        f'DATA SCIENTIST  ·  GEN AI  ·  AUTOMATION</text>'
+        f'<text class="cur" x="{w / 2:.0f}" y="{ty + 82:.0f}" text-anchor="middle">&gt; building intelligent systems_</text>'
+    )
+
+    css = f"""
+    .edge {{ stroke: {pal['edge']}; stroke-width: 1; }}
+    .flow {{ stroke: {pal['pulse']}; stroke-width: 1.8; stroke-linecap: round;
+            stroke-dasharray: 6 90; stroke-dashoffset: 96; animation: flow 4s linear infinite; }}
+    .node {{ fill: {pal['node']}; }}
+    .node-in {{ fill: {pal['pulse']}; }}
+    .node-out {{ fill: {pal['accent']}; }}
+    .halo {{ opacity: 0; animation: pulse 3s ease-in-out infinite; }}
+    .halo.node {{ fill: {pal['node']}; }}
+    .cap {{ fill: {pal['dim']}; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; }}
+    .big {{ fill: {pal['accent']}; font-size: 54px; font-weight: 800; letter-spacing: 14px; }}
+    .sub {{ fill: {pal['dim']}; font-size: 13px; letter-spacing: 2px; }}
+    .cur {{ fill: {pal['pulse']}; font-size: 15px; animation: blink 2.4s steps(1) infinite; }}
+    @keyframes flow {{ to {{ stroke-dashoffset: 0; }} }}
+    @keyframes pulse {{ 0%,100% {{ opacity: 0; transform: scale(.6); }} 50% {{ opacity: .28; transform: scale(1.5); }} }}
+    @keyframes blink {{ 50% {{ opacity: .35; }} }}
+    .halo {{ transform-box: fill-box; transform-origin: center; }}
+    """
+    return css, "".join(parts) + labels + title
 
 
 def build_stats_lines(stats):
@@ -135,10 +196,6 @@ def build_combined_svg(mode, stats):
     assert mode in ("light", "dark")
     palette = COLORS[mode]
 
-    ascii_path = os.path.join(ASSETS, f"ascii-{mode}.svg")
-    art_text_block = _extract_ascii_text_block(ascii_path)
-
-    ART_NATIVE_W, ART_NATIVE_H = 1188, 742
     FONT_SIZE = 18
     LINE_H = 26
     PAD = 18
@@ -171,18 +228,13 @@ def build_combined_svg(mode, stats):
 
     panel_height = PAD * 2 + len(lines) * LINE_H
 
-    # Left-to-right: art gets a fixed column width, vertically centered.
-    # Text panel fills the rest, sized to fit the longest line.
-    ART_COL_W = 650
-    scale = ART_COL_W / ART_NATIVE_W
-    art_col_w = ART_NATIVE_W * scale
-    art_col_h = ART_NATIVE_H * scale
-
-    # Vertically center the art within the text panel height.
-    art_y_offset = max(0, (panel_height - art_col_h) / 2)
+    # Left-to-right: generated art gets a fixed column; text panel fills the rest.
+    art_col_w = 650
+    art_col_h = panel_height - PAD * 2
+    art_css, art_body = _build_art(mode, art_col_w, art_col_h)
 
     PANEL_X = art_col_w + PAD * 2
-    total_height = max(panel_height, art_col_h + PAD * 2)
+    total_height = panel_height
 
     # Text panel width from the longest line.
     char_w = FONT_SIZE * 0.65
@@ -228,12 +280,11 @@ def build_combined_svg(mode, stats):
     .lbl {{ fill: {palette['label']}; }}
     .val {{ fill: {palette['value']}; }}
     .dim {{ fill: {palette['dim']}; }}
-    .art-fg {{ fill: {palette['value']}; opacity: 0.85; }}
-    text {{ font-family: {FONT_STACK}; }}
+    text {{ font-family: {FONT_STACK}; }}{art_css}
   </style>
   <rect class="bgrect" x="0" y="0" width="{total_width:.0f}" height="{total_height:.0f}" rx="10"/>
-  <g transform="translate({PAD},{PAD + art_y_offset:.0f}) scale({scale:.5f})">
-    {art_text_block}
+  <g transform="translate({PAD},{PAD})">
+    {art_body}
   </g>
   <text xml:space="preserve" font-size="{FONT_SIZE}">
     {''.join(text_tspans)}
