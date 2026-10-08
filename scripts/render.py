@@ -149,7 +149,7 @@ def _build_art(mode, w, h):
     title = (
         f'<text class="big" x="{w / 2:.0f}" y="{ty + 22:.0f}" text-anchor="middle">KUNAL</text>'
         f'<text class="sub" x="{w / 2:.0f}" y="{ty + 54:.0f}" text-anchor="middle">'
-        f'DATA SCIENTIST  ·  GEN AI  ·  AUTOMATION</text>'
+        f'DATA SCIENTIST  ·  APPLIED AI  ·  AUTOMATION</text>'
         f'<text class="cur" x="{w / 2:.0f}" y="{ty + 82:.0f}" text-anchor="middle">&gt; building intelligent systems_</text>'
     )
 
@@ -600,7 +600,7 @@ def build_top_langs_svg(mode, langs):
 HEADER_LINES = [
     "Hi 👋 I am Kunal",
     "Data Scientist",
-    "Gen AI Developer",
+    "Applied AI Engineer",
     "Automation Enthusiast",
     "Building Intelligent Systems",
     "Crafting AI Pipelines",
@@ -644,7 +644,7 @@ def build_header_svg(mode):
             f'style="animation-delay:{i * per:.1f}s">{_escape(text)}</text>'
         )
 
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Kunal — Data Scientist, Gen AI Developer">
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Kunal — Data Scientist, Applied AI Engineer">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="{c['bg1']}"/><stop offset="1" stop-color="{c['bg2']}"/>

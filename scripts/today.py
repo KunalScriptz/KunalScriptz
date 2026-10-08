@@ -21,6 +21,7 @@ Required PAT scopes: repo, read:user, user:email
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -607,6 +608,23 @@ def main():
     update_readme(projects, activity, medium)
 
 
+def bust_image_cache(text, root):
+    """Append ?v=<content hash> to every local .svg the README references, so
+    GitHub's image proxy (camo) re-fetches an image whenever its content changes."""
+    import hashlib
+
+    def tag(m):
+        quote, path = m.group(1), m.group(2)
+        full = os.path.join(root, path)
+        if not os.path.isfile(full):
+            return m.group(0)
+        with open(full, "rb") as f:
+            digest = hashlib.sha1(f.read()).hexdigest()[:8]
+        return f"{quote}{path}?v={digest}{quote}"
+
+    return re.sub(r'(["\'])((?:projects/)?[\w-]+\.svg)(?:\?v=\w+)?\1', tag, text)
+
+
 def update_readme(projects, activity, medium):
     path = os.path.join(HERE, "..", "README.md")
     with open(path, encoding="utf-8") as f:
@@ -623,6 +641,7 @@ def update_readme(projects, activity, medium):
         text = replace_block(text, "ACTIVITY", "\n".join(activity))
     if medium:
         text = replace_block(text, "BLOG", "\n".join(medium))
+    text = bust_image_cache(text, os.path.join(HERE, ".."))
     with open(path, "w", encoding="utf-8") as f:
         f.write(text)
 

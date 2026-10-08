@@ -58,7 +58,7 @@ Go to the **Actions** tab → "Update profile stats card" → **Run workflow**. 
 ## Key conventions
 
 - **Never commit with the Co-Authored-By: Claude line.** All commits use `KunalScriptz <kunal1520018@gmail.com>` identity.
-- The README uses a plain `<img>` tag (not `<picture>` with media queries) for the profile card SVG.
+- The README serves the profile card via `<picture>` (dark_mode.svg for dark themes, light_mode.svg otherwise). `today.py` appends `?v=<hash>` to every local SVG reference in the README so GitHub's image cache refreshes when an image changes.
 - Static bio fields (OS, host, hobbies, contact links, `WORK_START_DATE`) live in `render.py`'s `BIO` dict — edit them there, not in the SVG or README directly.
 - The `WORK_START_DATE` in `render.py` drives the auto-incrementing "Uptime" line in the profile card.
 - LOC counting uses `git log --author=<email> --numstat` on every owned + contributed repo. If a repo is huge and shouldn't be counted, exclude it in `today.py`'s `list_all_repo_urls()`.

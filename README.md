@@ -1,9 +1,9 @@
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="header-dark.svg"><img src="header-light.svg" alt="Kunal — Data Scientist · Gen AI Developer · Automation Enthusiast" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="header-dark.svg?v=20332035"><img src="header-light.svg?v=39a304c7" alt="Kunal — Data Scientist · Applied AI Engineer · Automation Enthusiast" width="100%"></picture>
 </p>
 
 <p align="center">
-<img src="light_mode.svg" alt="KunalScriptz Profile Card" width="100%">
+<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=a3f23274"><img src="light_mode.svg?v=bab1b57a" alt="KunalScriptz Profile Card" width="100%"></picture>
 </p>
 
 <p align="center">
@@ -15,7 +15,7 @@
 ## 👨‍💻 About Me
 
 - 🔭 Data Scientist / AI Engineer at **Worley India**, building intelligent systems and AI pipelines
-- 🤖 Focused on **Gen AI**, automation and clean, maintainable code
+- 🤖 Focused on **Applied AI**, automation and clean, maintainable code
 - 🛠️ Off the clock: Android rooting, custom ROMs and GPU overclocking
 - 📫 Reach me at [kunal1520018@gmail.com](mailto:kunal1520018@gmail.com) or on [LinkedIn](https://linkedin.com/in/kunal152001)
 
@@ -73,23 +73,23 @@
 ## 🚀 Featured Projects
 
 <!-- PROJECTS:START -->
-<a href="https://github.com/KunalScriptz/atlas-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-1-dark.svg"><img src="projects/project-1-light.svg" alt="atlas-ai" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/jobforgex"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-2-dark.svg"><img src="projects/project-2-light.svg" alt="jobforgex" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ML-DL-Projects"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-3-dark.svg"><img src="projects/project-3-light.svg" alt="ML-DL-Projects" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ollama_telegram_bot"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-4-dark.svg"><img src="projects/project-4-light.svg" alt="ollama_telegram_bot" width="49%"></picture></a>
+<a href="https://github.com/KunalScriptz/atlas-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-1-dark.svg?v=01377d70"><img src="projects/project-1-light.svg?v=a6b0561f" alt="atlas-ai" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/jobforgex"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-2-dark.svg?v=cfe0c06d"><img src="projects/project-2-light.svg?v=a857961b" alt="jobforgex" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ML-DL-Projects"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-3-dark.svg?v=d15b9668"><img src="projects/project-3-light.svg?v=7b1b2cb9" alt="ML-DL-Projects" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ollama_telegram_bot"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-4-dark.svg?v=ab392133"><img src="projects/project-4-light.svg?v=474a511c" alt="ollama_telegram_bot" width="49%"></picture></a>
 <!-- PROJECTS:END -->
 
 ## 📊 GitHub Stats
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg"><img src="streak-light.svg" alt="GitHub streak"></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="top-langs-dark.svg"><img src="top-langs-light.svg" alt="Top languages"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg?v=65b6ea2d"><img src="streak-light.svg?v=d09d6e06" alt="GitHub streak"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="top-langs-dark.svg?v=6c46a69e"><img src="top-langs-light.svg?v=af31cba4" alt="Top languages"></picture>
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg"><img src="contrib-light.svg" alt="Contribution graph"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=45e7ec02"><img src="contrib-light.svg?v=d3687c2f" alt="Contribution graph"></picture>
 </p>
 
 ### 🏆 Trophies
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg"><img src="trophies-light.svg" alt="GitHub trophies" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=ecccd86c"><img src="trophies-light.svg?v=463a7736" alt="GitHub trophies" width="100%"></picture>
 
 ## 📡 Latest Activity
 
@@ -111,7 +111,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg"><img src="quote-light.svg" alt="Dev quote of the day"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=39a019b5"><img src="quote-light.svg?v=132f3bd1" alt="Dev quote of the day"></picture>
 </p>
 
 ---
