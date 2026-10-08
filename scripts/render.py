@@ -23,7 +23,7 @@ BIO = {
     "OS": "Windows 11, Android 16, Ubuntu Linux",
     "Host": "Worley India Private Limited",
     "Kernel": "Data Scientist / AI Engineer",
-    "IDE": "VSCode 1.128",
+    "IDE": "VSCode 1.141.0",
     "Languages.Programming": "Python, Shell Script, PowerShell",
     "Languages.Computer": "HTML, CSS, YAML, Markdown",
     "Languages.Real": "English",
