@@ -23,7 +23,7 @@ BIO = {
     "OS": "Windows 11, Android 16, Ubuntu Linux",
     "Host": "Worley India Private Limited",
     "Kernel": "Data Scientist / AI Engineer",
-    "IDE": "VSCode 1.128",
+    "IDE": "VSCode 1.141.0",
     "Languages.Programming": "Python, Shell Script, PowerShell",
     "Languages.Computer": "HTML, CSS, YAML, Markdown",
     "Languages.Real": "English",
@@ -591,6 +591,268 @@ def build_top_langs_svg(mode, langs):
 </svg>'''
 
 
+# ---------------------------------------------------------------------------
+# README glow-up: animated header banner, daily dev quote, project cards and a
+# contribution heatmap. All self-hosted, so the README depends on no
+# third-party image service.
+# ---------------------------------------------------------------------------
+
+HEADER_LINES = [
+    "Hi 👋 I am Kunal",
+    "Data Scientist",
+    "Gen AI Developer",
+    "Automation Enthusiast",
+    "Building Intelligent Systems",
+    "Crafting AI Pipelines",
+    "Lover of Clean Code",
+]
+
+HEADER_COLORS = {
+    "light": {"bg1": "#dbeafe", "bg2": "#ede9fe", "w1": "#0969da", "w2": "#8250df", "w3": "#1a7f37",
+              "title": "#1a1a1a", "sub": "#57606a"},
+    "dark": {"bg1": "#0d1117", "bg2": "#1e1b4b", "w1": "#58a6ff", "w2": "#bc8cff", "w3": "#39d98a",
+             "title": "#e6edf3", "sub": "#9da7b3"},
+}
+
+
+def _wave_path(w, h, amp, phase, periods=2):
+    """Closed sine-wave path two canvas-widths long so it can scroll seamlessly."""
+    import math
+    pts = []
+    steps = 80
+    total_w = w * 2
+    for i in range(steps + 1):
+        x = total_w * i / steps
+        y = h + amp * math.sin(2 * math.pi * periods * x / total_w * 2 + phase)
+        pts.append(f"{x:.1f},{y:.1f}")
+    return f"M0,{h * 3} L" + " L".join(pts) + f" L{total_w},{h * 3} Z"
+
+
+def build_header_svg(mode):
+    """Animated banner: scrolling gradient waves + rotating tagline."""
+    assert mode in ("light", "dark")
+    c = HEADER_COLORS[mode]
+    W, H = 1188, 240
+    per = 3.2                      # seconds each tagline stays up
+    total = per * len(HEADER_LINES)
+    frac = per / total * 100
+
+    lines = []
+    for i, text in enumerate(HEADER_LINES):
+        lines.append(
+            f'<text class="tag" x="{W / 2:.0f}" y="168" text-anchor="middle" '
+            f'style="animation-delay:{i * per:.1f}s">{_escape(text)}</text>'
+        )
+
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Kunal — Data Scientist, Gen AI Developer">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="{c['bg1']}"/><stop offset="1" stop-color="{c['bg2']}"/>
+    </linearGradient>
+    <clipPath id="clip"><rect width="{W}" height="{H}" rx="14"/></clipPath>
+  </defs>
+  <style>
+    text {{ font-family: {FONT_STACK}; }}
+    .name {{ fill: {c['title']}; font-size: 52px; font-weight: 800; letter-spacing: 6px; }}
+    .tag {{ fill: {c['sub']}; font-size: 24px; opacity: 0; animation: tag {total:.1f}s linear infinite; }}
+    .w1 {{ animation: scroll 16s linear infinite; }}
+    .w2 {{ animation: scroll 24s linear infinite reverse; }}
+    .w3 {{ animation: scroll 34s linear infinite; }}
+    .cur {{ fill: {c['w3']}; font-size: 24px; animation: blink 1s steps(1) infinite; }}
+    @keyframes scroll {{ from {{ transform: translateX(0); }} to {{ transform: translateX(-{W}px); }} }}
+    @keyframes blink {{ 50% {{ opacity: 0; }} }}
+    @keyframes tag {{
+      0% {{ opacity: 0; transform: translateY(10px); }}
+      3% {{ opacity: 1; transform: translateY(0); }}
+      {frac - 3:.2f}% {{ opacity: 1; transform: translateY(0); }}
+      {frac:.2f}% {{ opacity: 0; transform: translateY(-10px); }}
+      100% {{ opacity: 0; }}
+    }}
+  </style>
+  <g clip-path="url(#clip)">
+    <rect width="{W}" height="{H}" fill="url(#bg)"/>
+    <path class="w3" d="{_wave_path(W, 200, 14, 2.0)}" fill="{c['w3']}" opacity="0.18"/>
+    <path class="w2" d="{_wave_path(W, 210, 18, 1.0)}" fill="{c['w2']}" opacity="0.22"/>
+    <path class="w1" d="{_wave_path(W, 220, 16, 0)}" fill="{c['w1']}" opacity="0.28"/>
+    <text class="name" x="{W / 2:.0f}" y="100" text-anchor="middle">KUNAL</text>
+    {''.join(lines)}
+  </g>
+</svg>'''
+
+
+# Real, correctly attributed quotes; one is picked per day.
+QUOTES = [
+    ("Talk is cheap. Show me the code.", "Linus Torvalds"),
+    ("Programs must be written for people to read, and only incidentally for machines to execute.", "Harold Abelson"),
+    ("Premature optimization is the root of all evil.", "Donald Knuth"),
+    ("Simplicity is prerequisite for reliability.", "Edsger W. Dijkstra"),
+    ("Make it work, make it right, make it fast.", "Kent Beck"),
+    ("First, solve the problem. Then, write the code.", "John Johnson"),
+    ("Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", "Martin Fowler"),
+    ("The best way to predict the future is to invent it.", "Alan Kay"),
+    ("All models are wrong, but some are useful.", "George E. P. Box"),
+    ("Code is like humor. When you have to explain it, it is bad.", "Cory House"),
+    ("Before software can be reusable it first has to be usable.", "Ralph Johnson"),
+    ("Debugging is twice as hard as writing the code in the first place.", "Brian Kernighan"),
+]
+
+
+def _wrap(text, width):
+    words, lines, cur = text.split(), [], ""
+    for w in words:
+        if cur and len(cur) + 1 + len(w) > width:
+            lines.append(cur)
+            cur = w
+        else:
+            cur = f"{cur} {w}".strip()
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def build_quote_svg(mode, day=None):
+    from datetime import date
+    palette = COLORS[mode]
+    art = ART_COLORS[mode]
+    day = day or date.today()
+    quote, author = QUOTES[day.toordinal() % len(QUOTES)]
+    lines = _wrap(quote, 62)
+    W = 720
+    H = 70 + 28 * len(lines) + 44
+    body = [
+        f'<text x="26" y="62" class="mark">“</text>',
+    ]
+    for i, l in enumerate(lines):
+        body.append(f'<text x="60" y="{78 + i * 28}" class="q">{_escape(l)}</text>')
+    body.append(f'<text x="{W - 26}" y="{H - 22}" text-anchor="end" class="by">— {_escape(author)}</text>')
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Dev quote of the day">
+  <style>
+    .bgrect {{ fill: {palette['bg']}; stroke: {palette['border']}; }}
+    .bar {{ fill: {art['accent']}; }}
+    .mark {{ fill: {art['accent']}; font-size: 54px; font-weight: 800; }}
+    .q {{ fill: {palette['value']}; font-size: 18px; font-style: italic; }}
+    .by {{ fill: {palette['dim']}; font-size: 14px; }}
+    .hd {{ fill: {palette['dim']}; font-size: 11px; letter-spacing: 3px; }}
+    text {{ font-family: {FONT_STACK}; }}
+  </style>
+  <rect class="bgrect" x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="10"/>
+  <rect class="bar" x="0" y="14" width="5" height="{H - 28}" rx="2"/>
+  <text x="{W - 26}" y="26" text-anchor="end" class="hd">DEV QUOTE OF THE DAY</text>
+  {''.join(body)}
+</svg>'''
+
+
+def _wrap_ellipsis(text, width, max_lines):
+    lines = _wrap(text, width)
+    if len(lines) > max_lines:
+        lines = lines[:max_lines]
+        lines[-1] = lines[-1][: width - 1].rstrip() + "…"
+    return lines
+
+
+def build_project_svg(mode, repo):
+    """One project card. repo: {name, description, language, stars, forks}."""
+    palette = COLORS[mode]
+    art = ART_COLORS[mode]
+    W, H = 480, 140
+    desc = _wrap_ellipsis(repo.get("description") or "No description yet.", 54, 2)
+    lang = repo.get("language") or ""
+    color = LANG_COLORS.get(lang, LANG_COLORS["_default"])
+    parts = [
+        f'<text x="20" y="34" class="ttl">{_escape(repo["name"])}</text>',
+    ]
+    for i, l in enumerate(desc):
+        parts.append(f'<text x="20" y="{62 + i * 20}" class="desc">{_escape(l)}</text>')
+    x = 20
+    if lang:
+        parts.append(f'<circle cx="{x + 5}" cy="{H - 24}" r="5.5" fill="{color}"/>')
+        parts.append(f'<text x="{x + 16}" y="{H - 19}" class="meta">{_escape(lang)}</text>')
+        x += 36 + len(lang) * 8
+    parts.append(f'<text x="{x}" y="{H - 19}" class="meta">★ {repo.get("stars", 0)}</text>')
+    parts.append(f'<text x="{x + 64}" y="{H - 19}" class="meta">⑂ {repo.get("forks", 0)}</text>')
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Project {_escape(repo['name'])}">
+  <style>
+    .bgrect {{ fill: {palette['bg']}; stroke: {palette['border']}; }}
+    .ttl {{ fill: {palette['header']}; font-size: 18px; font-weight: 700; }}
+    .desc {{ fill: {palette['value']}; font-size: 13px; }}
+    .meta {{ fill: {palette['dim']}; font-size: 13px; }}
+    .accent {{ fill: {art['accent']}; }}
+    text {{ font-family: {FONT_STACK}; }}
+  </style>
+  <rect class="bgrect" x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="10"/>
+  <rect class="accent" x="0" y="0" width="{W}" height="4" rx="2" opacity="0.9"/>
+  {''.join(parts)}
+</svg>'''
+
+
+CONTRIB_LEVELS = {
+    "light": ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
+    "dark": ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"],
+}
+
+
+def build_contrib_svg(mode, days):
+    """GitHub-style contribution heatmap. days: [(iso_date, count), ...] ordered."""
+    from datetime import date
+    palette = COLORS[mode]
+    levels = CONTRIB_LEVELS[mode]
+    CELL, GAP, LEFT, TOP = 11, 3, 34, 40
+    if not days:
+        days = []
+    first = date.fromisoformat(days[0][0]) if days else date.today()
+    offset = (first.weekday() + 1) % 7          # Sunday-first rows
+    peak = max((c for _, c in days), default=0) or 1
+    total = sum(c for _, c in days)
+
+    def level(c):
+        if c <= 0:
+            return 0
+        q = c / peak
+        return 1 if q <= 0.25 else 2 if q <= 0.5 else 3 if q <= 0.75 else 4
+
+    cells, months, seen = [], [], set()
+    for idx, (iso, cnt) in enumerate(days):
+        pos = idx + offset
+        col, row = divmod(pos, 7)
+        x = LEFT + col * (CELL + GAP)
+        y = TOP + row * (CELL + GAP)
+        d = date.fromisoformat(iso)
+        key = (d.year, d.month)
+        if row == 0 or idx == 0:
+            if key not in seen and d.day <= 7:
+                seen.add(key)
+                months.append(f'<text x="{x}" y="{TOP - 8}" class="dim" font-size="10">{d.strftime("%b")}</text>')
+        cells.append(
+            f'<rect class="c" x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="2" '
+            f'fill="{levels[level(cnt)]}" style="animation-delay:{col * 0.025:.2f}s"><title>{cnt} on {iso}</title></rect>'
+        )
+    cols = (len(days) + offset + 6) // 7
+    W = LEFT + cols * (CELL + GAP) + 16
+    H = TOP + 7 * (CELL + GAP) + 28
+    dow = "".join(
+        f'<text x="6" y="{TOP + r * (CELL + GAP) + 9}" class="dim" font-size="9">{n}</text>'
+        for r, n in ((1, "Mon"), (3, "Wed"), (5, "Fri"))
+    )
+    legend_x = W - 16 - 5 * (CELL + 3) - 60
+    legend = (
+        f'<text x="{legend_x}" y="{H - 10}" class="dim" font-size="10">Less</text>'
+        + "".join(
+            f'<rect x="{legend_x + 28 + i * (CELL + 3)}" y="{H - 19}" width="{CELL}" height="{CELL}" rx="2" fill="{lv}"/>'
+            for i, lv in enumerate(levels)
+        )
+        + f'<text x="{legend_x + 32 + 5 * (CELL + 3)}" y="{H - 10}" class="dim" font-size="10">More</text>'
+    )
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Contribution graph">
+  <style>{_streak_svg_style(palette)}
+    .c {{ animation: pop .5s ease-out backwards; }}
+    @keyframes pop {{ from {{ opacity: 0; }} to {{ opacity: 1; }} }}
+  </style>
+  <rect class="bgrect" x="0" y="0" width="{W}" height="{H}" rx="10"/>
+  <text x="16" y="22" class="hdr" font-size="14">{total:,} contributions in the last year</text>
+  {''.join(months)}{dow}{''.join(cells)}{legend}
+</svg>'''
+
+
 if __name__ == "__main__":
     # Quick local preview with placeholder numbers, so you can see the
     # layout before wiring up the real GitHub Action.
@@ -632,4 +894,7 @@ if __name__ == "__main__":
         langs_svg = build_top_langs_svg(mode, demo_langs)
         with open(os.path.join(out_dir, f"top-langs-{mode}.svg"), "w", encoding="utf-8") as f:
             f.write(langs_svg)
-    print("Wrote light_mode.svg, dark_mode.svg, trophies-*.svg, streak-*.svg and top-langs-*.svg with placeholder stats.")
+        for name, svg in (("header", build_header_svg(mode)), ("quote", build_quote_svg(mode))):
+            with open(os.path.join(out_dir, f"{name}-{mode}.svg"), "w", encoding="utf-8") as f:
+                f.write(svg)
+    print("Wrote light_mode.svg, dark_mode.svg, trophies-*.svg, streak-*.svg and top-langs-*.svg, header-*.svg and quote-*.svg with placeholder stats.")

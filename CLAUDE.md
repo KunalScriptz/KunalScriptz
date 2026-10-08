@@ -28,7 +28,7 @@ cache/              # Per-repo JSON files with {sha, added, deleted} to skip
                     # commits updated SVGs + cache back.
 ```
 
-**Data flow:** `today.py` → stats dict → `render.build_combined_svg(mode, stats)` → `light_mode.svg` / `dark_mode.svg` → embedded in README.md. The same run also produces `trophies-light.svg` / `trophies-dark.svg` (`render.build_trophies_svg`), `streak-light.svg` / `streak-dark.svg` (`render.build_streak_svg`), and `top-langs-light.svg` / `top-langs-dark.svg` (`render.build_top_langs_svg`) — self-hosted replacements for the retired `github-profile-trophy`, `github-readme-streak-stats`, and `github-readme-stats` services.
+**Data flow:** `today.py` → stats dict → `render.build_combined_svg(mode, stats)` → `light_mode.svg` / `dark_mode.svg` → embedded in README.md. The same run also produces `trophies-light.svg` / `trophies-dark.svg` (`render.build_trophies_svg`), `streak-light.svg` / `streak-dark.svg` (`render.build_streak_svg`), and `top-langs-light.svg` / `top-langs-dark.svg` (`render.build_top_langs_svg`) — self-hosted replacements for the retired `github-profile-trophy`, `github-readme-streak-stats`, and `github-readme-stats` services. It also writes `header-*.svg` (animated banner), `quote-*.svg` (daily dev quote), `contrib-*.svg` (contribution heatmap) and `projects/project-N-*.svg` (top-starred public repos), and rewrites the `<!-- PROJECTS|ACTIVITY|BLOG:START/END -->` blocks in `README.md` (projects, recent public activity, Medium RSS). Each of those extras is best-effort (`safe()` in `today.py`): a failing source keeps the previous output. `.github/workflows/snake.yml` separately regenerates the contribution snake on the `output` branch.
 
 ## Commands
 
@@ -53,7 +53,7 @@ Required PAT scopes: `repo`, `read:user`, `user:email`. First run is slow (clone
 
 ### Trigger the Action manually
 
-Go to the **Actions** tab → "Update profile stats card" → **Run workflow**. Or push to `scripts/**` or `assets/**` — the workflow triggers on those paths.
+Go to the **Actions** tab → "Update profile stats card" → **Run workflow**. Or push to `scripts/**` — the workflow triggers on that path.
 
 ## Key conventions
 
