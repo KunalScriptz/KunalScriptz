@@ -374,6 +374,143 @@ def fetch_loc_stats(repos):
     return total_added, total_deleted
 
 
+# ---------------------------------------------------------------------------
+# README extras: featured projects, last-year contribution calendar, recent
+# public activity and latest Medium posts. Everything public-only.
+# ---------------------------------------------------------------------------
+PROJECT_COUNT = 4
+MEDIUM_HANDLE = render.BIO["Medium"]          # e.g. "@kunal1520018"
+
+
+def fetch_projects(limit=PROJECT_COUNT):
+    """Most-starred public, non-fork, non-archived repos (profile repo excluded)."""
+    query = """
+    query($login: String!) {
+      user(login: $login) {
+        repositories(privacy: PUBLIC, ownerAffiliations: OWNER, isFork: false, first: 30,
+                     orderBy: {field: STARGAZERS, direction: DESC}) {
+          nodes {
+            name url description isArchived stargazerCount forkCount pushedAt
+            primaryLanguage { name }
+          }
+        }
+      }
+    }
+    """
+    nodes = gql(query, {"login": USERNAME})["user"]["repositories"]["nodes"]
+    nodes = [n for n in nodes if not n["isArchived"] and n["name"].lower() != USERNAME.lower()]
+    # Stars first, then most recently pushed.
+    nodes.sort(key=lambda n: (n["stargazerCount"], n["pushedAt"]), reverse=True)
+    return [
+        {
+            "name": n["name"], "url": n["url"], "description": n["description"],
+            "language": (n["primaryLanguage"] or {}).get("name"),
+            "stars": n["stargazerCount"], "forks": n["forkCount"],
+        }
+        for n in nodes[:limit]
+    ]
+
+
+def fetch_contribution_days():
+    """[(iso_date, count)] for roughly the last 365 days."""
+    query = """
+    query($login: String!, $from: DateTime!, $to: DateTime!) {
+      user(login: $login) {
+        contributionsCollection(from: $from, to: $to) {
+          contributionCalendar { weeks { contributionDays { date contributionCount } } }
+        }
+      }
+    }
+    """
+    now = datetime.now(timezone.utc)
+    start = now - timedelta(days=364)
+    cal = gql(query, {"login": USERNAME, "from": start.isoformat(), "to": now.isoformat()})[
+        "user"]["contributionsCollection"]["contributionCalendar"]
+    days = [(d["date"], d["contributionCount"]) for w in cal["weeks"] for d in w["contributionDays"]]
+    return sorted(days)
+
+
+def fetch_recent_activity(limit=5):
+    """Markdown bullets for the latest public pushes and merged PRs."""
+    resp = requests.get(
+        f"https://api.github.com/users/{USERNAME}/events/public?per_page=60",
+        headers={"Authorization": f"Bearer {TOKEN}", "Accept": "application/vnd.github+json"},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    items, seen = [], set()
+    for ev in resp.json():
+        repo = ev["repo"]["name"]
+        link = f"[{repo}](https://github.com/{repo})"
+        when = ev["created_at"][:10]
+        text = None
+        if ev["type"] == "PushEvent":
+            commits = ev["payload"].get("commits") or []
+            if commits:
+                msg = commits[-1]["message"].splitlines()[0][:80]
+                text = f"🔨 Pushed to {link} — {msg}"
+        elif ev["type"] == "PullRequestEvent" and ev["payload"].get("action") == "closed" \
+                and ev["payload"]["pull_request"].get("merged"):
+            pr = ev["payload"]["pull_request"]
+            text = f"🔀 Merged [#{pr['number']}]({pr['html_url']}) in {link} — {pr['title'][:80]}"
+        elif ev["type"] == "CreateEvent" and ev["payload"].get("ref_type") == "repository":
+            text = f"✨ Created {link}"
+        if text and text not in seen:
+            seen.add(text)
+            items.append(f"- `{when}` {text}")
+        if len(items) >= limit:
+            break
+    return items
+
+
+def fetch_medium_posts(limit=3):
+    """Latest Medium posts via the public RSS feed (no auth)."""
+    import xml.etree.ElementTree as ET
+    resp = requests.get(f"https://medium.com/feed/{MEDIUM_HANDLE}", timeout=30,
+                        headers={"User-Agent": "Mozilla/5.0"})
+    resp.raise_for_status()
+    root = ET.fromstring(resp.content)
+    posts = []
+    for item in root.iter("item"):
+        title = (item.findtext("title") or "").strip()
+        link = (item.findtext("link") or "").split("?")[0]
+        when = (item.findtext("pubDate") or "")[5:16]
+        if title and link:
+            posts.append(f"- 📝 [{title}]({link}) — {when}")
+        if len(posts) >= limit:
+            break
+    return posts
+
+
+def replace_block(text, name, body):
+    """Swap the content between <!-- NAME:START --> and <!-- NAME:END --> markers."""
+    start, end = f"<!-- {name}:START -->", f"<!-- {name}:END -->"
+    if start not in text or end not in text:
+        print(f"README marker {name} not found; skipping")
+        return text
+    head, rest = text.split(start, 1)
+    _, tail = rest.split(end, 1)
+    return f"{head}{start}\n{body}\n{end}{tail}"
+
+
+def picture(base, alt, width=None):
+    """<picture> tag that serves the light/dark variant of an SVG."""
+    w = f' width="{width}"' if width else ""
+    return (
+        f'<picture><source media="(prefers-color-scheme: dark)" srcset="{base.format(mode="dark")}">'
+        f'<img src="{base.format(mode="light")}" alt="{alt}"{w}></picture>'
+    )
+
+
+def safe(label, fn, default):
+    """Run a best-effort fetch; one flaky source must never break the whole run."""
+    try:
+        return fn()
+    except Exception as exc:  # noqa: BLE001
+        print(f"WARN: {label} failed ({exc}); keeping previous output")
+        return default
+
+
 def main():
     print(f"Fetching stats for {USERNAME} ...")
 
@@ -415,7 +552,28 @@ def main():
     }
 
     out_dir = os.path.join(HERE, "..")
+
+    projects = safe("projects", fetch_projects, None)
+    contrib_days = safe("contribution calendar", fetch_contribution_days, None)
+    activity = safe("recent activity", fetch_recent_activity, None)
+    medium = safe("medium feed", fetch_medium_posts, None)
+
+    os.makedirs(os.path.join(out_dir, "projects"), exist_ok=True)
     for mode in ("light", "dark"):
+        for name, builder, arg in (
+            ("header", render.build_header_svg, None),
+            ("quote", render.build_quote_svg, None),
+        ):
+            path = os.path.join(out_dir, f"{name}-{mode}.svg")
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(builder(mode))
+        if contrib_days:
+            with open(os.path.join(out_dir, f"contrib-{mode}.svg"), "w", encoding="utf-8") as f:
+                f.write(render.build_contrib_svg(mode, contrib_days))
+        for i, repo in enumerate(projects or []):
+            with open(os.path.join(out_dir, "projects", f"project-{i + 1}-{mode}.svg"), "w", encoding="utf-8") as f:
+                f.write(render.build_project_svg(mode, repo))
+
         svg = render.build_combined_svg(mode, stats)
         out_path = os.path.join(out_dir, f"{mode}_mode.svg")
         with open(out_path, "w", encoding="utf-8") as f:
@@ -439,6 +597,28 @@ def main():
         with open(langs_path, "w", encoding="utf-8") as f:
             f.write(langs_svg)
         print(f"Wrote {langs_path}")
+
+    update_readme(projects, activity, medium)
+
+
+def update_readme(projects, activity, medium):
+    path = os.path.join(HERE, "..", "README.md")
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    if projects:
+        cells = [
+            f'<a href="{r["url"]}">'
+            + picture(f"projects/project-{i + 1}-{{mode}}.svg", r["name"], width="49%")
+            + "</a>"
+            for i, r in enumerate(projects)
+        ]
+        text = replace_block(text, "PROJECTS", " ".join(cells))
+    if activity:
+        text = replace_block(text, "ACTIVITY", "\n".join(activity))
+    if medium:
+        text = replace_block(text, "BLOG", "\n".join(medium))
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
 
 
 if __name__ == "__main__":
