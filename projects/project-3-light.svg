@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="140" viewBox="0 0 480 140" role="img" aria-label="Project ML-DL-Projects">
+  <style>
+    .bgrect { fill: #ffffff; stroke: #d0d7de; }
+    .ttl { fill: #0969da; font-size: 18px; font-weight: 700; }
+    .desc { fill: #1a1a1a; font-size: 13px; }
+    .meta { fill: #6e7781; font-size: 13px; }
+    .accent { fill: #8250df; }
+    text { font-family: 'JetBrains Mono','IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  </style>
+  <rect class="bgrect" x="0.5" y="0.5" width="479" height="139" rx="10"/>
+  <rect class="accent" x="0" y="0" width="480" height="4" rx="2" opacity="0.9"/>
+  <text x="20" y="34" class="ttl">ML-DL-Projects</text><text x="20" y="62" class="desc">A collection of hands-on Machine Learning and Deep</text><text x="20" y="82" class="desc">Learning projects covering Regression, Classification…</text><circle cx="25" cy="116" r="5.5" fill="#DA5B0B"/><text x="36" y="121" class="meta">Jupyter Notebook</text><text x="184" y="121" class="meta">★ 2</text><text x="248" y="121" class="meta">⑂ 0</text>
+</svg>

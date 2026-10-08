@@ -63,6 +63,7 @@
 ## 🚀 Featured Projects
 
 <!-- PROJECTS:START -->
+<a href="https://github.com/KunalScriptz/ollama_telegram_bot"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-1-dark.svg"><img src="projects/project-1-light.svg" alt="ollama_telegram_bot" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/jobforgex"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-2-dark.svg"><img src="projects/project-2-light.svg" alt="jobforgex" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ML-DL-Projects"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-3-dark.svg"><img src="projects/project-3-light.svg" alt="ML-DL-Projects" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/atlas-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-4-dark.svg"><img src="projects/project-4-light.svg" alt="atlas-ai" width="49%"></picture></a>
 <!-- PROJECTS:END -->
 
 ## 📊 GitHub Stats
@@ -88,6 +89,9 @@
 ### ✍️ From the Blog
 
 <!-- BLOG:START -->
+- 📝 [I Automated My Job Search With This Open-Source AI Pipeline — Here’s What Happened](https://medium.com/@kunal1520018/i-automated-my-job-search-with-this-open-source-ai-pipeline-heres-what-happened-bbaf61d79000) — 27 Jun 2026
+- 📝 [whichllm: The Smart Way to Find the Right Local LLM for Your Hardware](https://medium.com/@kunal1520018/whichllm-the-smart-way-to-find-the-right-local-llm-for-your-hardware-a6bbb424b049) — 26 May 2026
+- 📝 [How to Deploy Docker Apps Automatically with a Self Hosted GitHub Actions Runner](https://medium.com/@kunal1520018/how-to-deploy-docker-apps-automatically-with-a-self-hosted-github-actions-runner-bcafdea1f164) — 25 May 2026
 <!-- BLOG:END -->
 
 ## 🐍 Contribution Snake
