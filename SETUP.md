@@ -9,9 +9,6 @@ KunalScriptz/
 ├── README.md
 ├── light_mode.svg          <- placeholder, overwritten by the Action
 ├── dark_mode.svg            <- placeholder, overwritten by the Action
-├── assets/
-│   ├── ascii-light.svg
-│   └── ascii-dark.svg
 ├── scripts/
 │   ├── today.py
 │   ├── render.py

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is **KunalScriptz's GitHub profile repo** — the `README.md` is what appears on github.com/KunalScriptz. The repo auto-generates a combined "ASCII art + neofetch-style stats panel" SVG (light/dark variants) via a GitHub Action that runs daily, pulling live stats from the GitHub API.
+This is **KunalScriptz's GitHub profile repo** — the `README.md` is what appears on github.com/KunalScriptz. The repo auto-generates a combined "generated neural-network art + neofetch-style stats panel" SVG (light/dark variants) via a GitHub Action that runs daily, pulling live stats from the GitHub API.
 
 ## Architecture
 
@@ -14,19 +14,17 @@ scripts/
                  # Calls render.build_combined_svg() to write light_mode.svg
                  # and dark_mode.svg. Reads cache/ for per-repo LOC SHA caching.
   render.py      # Pure SVG renderer. Takes a stats dict, produces the combined
-                 # SVG. Contains the BIO dict with all static info (OS, host,
+                 # SVG (left column is an animated neural-network graphic drawn
+                 # by _build_art — no avatar/portrait). Contains the BIO dict with all static info (OS, host,
                  # hobbies, contact links, WORK_START_DATE). Also renders the
                  # trophy grid (build_trophies_svg) from trophy metrics + the
                  # rank thresholds in _BASE_TROPHIES. Never touches the GitHub
                  # API — it only knows how to draw.
   requirements.txt  # Only dependency: requests>=2.31.0
-assets/
-  ascii-light.svg   # ASCII art SVG (light theme) — embedded into the combined card
-  ascii-dark.svg    # ASCII art SVG (dark theme)
 cache/              # Per-repo JSON files with {sha, added, deleted} to skip
                     # unchanged repos on subsequent LOC runs
 .github/workflows/update-readme.yml  # Runs daily at 03:15 UTC + on push to
-                    # scripts/** or assets/**. Checks out repo, runs today.py,
+                    # scripts/**. Checks out repo, runs today.py,
                     # commits updated SVGs + cache back.
 ```
 
