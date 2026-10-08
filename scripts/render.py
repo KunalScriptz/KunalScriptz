@@ -27,7 +27,7 @@ BIO = {
     "Languages.Programming": "Python, Shell Script, PowerShell",
     "Languages.Computer": "HTML, CSS, YAML, Markdown",
     "Languages.Real": "English",
-    "Hobbies.Software": "Android modding, custom ROMs, rclone",
+    "Hobbies.Software": "Android rooting, custom ROMs, rclone",
     "Hobbies.Hardware": "GPU overclocking",
     "Email": "kunal1520018@gmail.com",
     "LinkedIn": "kunal152001",

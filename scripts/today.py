@@ -379,11 +379,14 @@ def fetch_loc_stats(repos):
 # public activity and latest Medium posts. Everything public-only.
 # ---------------------------------------------------------------------------
 PROJECT_COUNT = 4
+# Shown first, in this order (case-insensitive); remaining slots fall back to
+# most-starred. Edit this list to change the featured projects.
+PINNED_PROJECTS = ["atlas-ai", "jobforgex", "ML-DL-Projects", "ollama_telegram_bot"]
 MEDIUM_HANDLE = render.BIO["Medium"]          # e.g. "@kunal1520018"
 
 
 def fetch_projects(limit=PROJECT_COUNT):
-    """Most-starred public, non-fork, non-archived repos (profile repo excluded)."""
+    """Pinned (PINNED_PROJECTS) then most-starred public, non-fork, non-archived repos (profile repo excluded)."""
     query = """
     query($login: String!) {
       user(login: $login) {
@@ -399,8 +402,11 @@ def fetch_projects(limit=PROJECT_COUNT):
     """
     nodes = gql(query, {"login": USERNAME})["user"]["repositories"]["nodes"]
     nodes = [n for n in nodes if not n["isArchived"] and n["name"].lower() != USERNAME.lower()]
-    # Stars first, then most recently pushed.
+    # Most-starred / most recently pushed first, then pinned repos pulled to the
+    # front in PINNED_PROJECTS order (sort is stable, so the rest keep that order).
     nodes.sort(key=lambda n: (n["stargazerCount"], n["pushedAt"]), reverse=True)
+    pinned = [name.lower() for name in PINNED_PROJECTS]
+    nodes.sort(key=lambda n: pinned.index(n["name"].lower()) if n["name"].lower() in pinned else len(pinned))
     return [
         {
             "name": n["name"], "url": n["url"], "description": n["description"],
