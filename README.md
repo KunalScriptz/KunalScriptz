@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=1631a1c3"><img src="light_mode.svg?v=d467cc90" alt="KunalScriptz Profile Card" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=4f1ae6e7"><img src="light_mode.svg?v=c79377b8" alt="KunalScriptz Profile Card" width="100%"></picture>
 </p>
 
 <p align="center">
@@ -73,23 +73,23 @@
 ## 🚀 Featured Projects
 
 <!-- PROJECTS:START -->
-<a href="https://github.com/KunalScriptz/atlas-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-1-dark.svg?v=01377d70"><img src="projects/project-1-light.svg?v=a6b0561f" alt="atlas-ai" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/jobforgex"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-2-dark.svg?v=244972be"><img src="projects/project-2-light.svg?v=b77905db" alt="jobforgex" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ML-DL-Projects"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-3-dark.svg?v=d15b9668"><img src="projects/project-3-light.svg?v=7b1b2cb9" alt="ML-DL-Projects" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ollama_telegram_bot"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-4-dark.svg?v=ab392133"><img src="projects/project-4-light.svg?v=474a511c" alt="ollama_telegram_bot" width="49%"></picture></a>
+<a href="https://github.com/KunalScriptz/atlas-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-1-dark.svg?v=01377d70"><img src="projects/project-1-light.svg?v=a6b0561f" alt="atlas-ai" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/jobforgex"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-2-dark.svg?v=bd5650e0"><img src="projects/project-2-light.svg?v=eb700b1e" alt="jobforgex" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ML-DL-Projects"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-3-dark.svg?v=d15b9668"><img src="projects/project-3-light.svg?v=7b1b2cb9" alt="ML-DL-Projects" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ollama_telegram_bot"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-4-dark.svg?v=ab392133"><img src="projects/project-4-light.svg?v=474a511c" alt="ollama_telegram_bot" width="49%"></picture></a>
 <!-- PROJECTS:END -->
 
 ## 📊 GitHub Stats
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg?v=d31efbc1"><img src="streak-light.svg?v=ea50db5f" alt="GitHub streak"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg?v=89c9d666"><img src="streak-light.svg?v=a7e23604" alt="GitHub streak"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="top-langs-dark.svg?v=7901af3c"><img src="top-langs-light.svg?v=ee3be0a1" alt="Top languages"></picture>
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=a9db635e"><img src="contrib-light.svg?v=226df6a4" alt="Contribution graph"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=19e34ec7"><img src="contrib-light.svg?v=5c6cd8b7" alt="Contribution graph"></picture>
 </p>
 
 ### 🏆 Trophies
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=6bf3c655"><img src="trophies-light.svg?v=3e539767" alt="GitHub trophies" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=6f73967e"><img src="trophies-light.svg?v=f74f23b4" alt="GitHub trophies" width="100%"></picture>
 
 ## 📡 Latest Activity
 
@@ -111,7 +111,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=02255444"><img src="quote-light.svg?v=69ec40a4" alt="Dev quote of the day"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=0c35afaa"><img src="quote-light.svg?v=4483ce22" alt="Dev quote of the day"></picture>
 </p>
 
 ---
