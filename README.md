@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=ceb12661"><img src="light_mode.svg?v=e1b9b573" alt="KunalScriptz Profile Card" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=73fcfb78"><img src="light_mode.svg?v=20920f10" alt="KunalScriptz Profile Card" width="100%"></picture>
 </p>
 
 <p align="center">
@@ -73,7 +73,7 @@
 ## 🚀 Featured Projects
 
 <!-- PROJECTS:START -->
-<a href="https://github.com/KunalScriptz/atlas-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-1-dark.svg?v=01377d70"><img src="projects/project-1-light.svg?v=a6b0561f" alt="atlas-ai" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/jobforgex"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-2-dark.svg?v=5c83ba35"><img src="projects/project-2-light.svg?v=479beb49" alt="jobforgex" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ML-DL-Projects"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-3-dark.svg?v=d15b9668"><img src="projects/project-3-light.svg?v=7b1b2cb9" alt="ML-DL-Projects" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ollama_telegram_bot"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-4-dark.svg?v=ab392133"><img src="projects/project-4-light.svg?v=474a511c" alt="ollama_telegram_bot" width="49%"></picture></a>
+<a href="https://github.com/KunalScriptz/atlas-ai"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-1-dark.svg?v=01377d70"><img src="projects/project-1-light.svg?v=a6b0561f" alt="atlas-ai" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/jobforgex"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-2-dark.svg?v=5d5a801c"><img src="projects/project-2-light.svg?v=5a644ce8" alt="jobforgex" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ML-DL-Projects"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-3-dark.svg?v=d15b9668"><img src="projects/project-3-light.svg?v=7b1b2cb9" alt="ML-DL-Projects" width="49%"></picture></a> <a href="https://github.com/KunalScriptz/ollama_telegram_bot"><picture><source media="(prefers-color-scheme: dark)" srcset="projects/project-4-dark.svg?v=25a33343"><img src="projects/project-4-light.svg?v=514e6420" alt="ollama_telegram_bot" width="49%"></picture></a>
 <!-- PROJECTS:END -->
 
 ## 📊 GitHub Stats
@@ -84,12 +84,12 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=2b51f79d"><img src="contrib-light.svg?v=7c39e568" alt="Contribution graph"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=a1fdcc50"><img src="contrib-light.svg?v=a05f6c4e" alt="Contribution graph"></picture>
 </p>
 
 ### 🏆 Trophies
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=5da93618"><img src="trophies-light.svg?v=3129b43c" alt="GitHub trophies" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=2645b2ea"><img src="trophies-light.svg?v=5b2b0f19" alt="GitHub trophies" width="100%"></picture>
 
 ## 📡 Latest Activity
 
@@ -111,7 +111,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=4b5bb334"><img src="quote-light.svg?v=737e3ac3" alt="Dev quote of the day"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=be4a520a"><img src="quote-light.svg?v=5ad06151" alt="Dev quote of the day"></picture>
 </p>
 
 ---
