@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=73fcfb78"><img src="light_mode.svg?v=20920f10" alt="KunalScriptz Profile Card" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=ed6caa8e"><img src="light_mode.svg?v=4123857e" alt="KunalScriptz Profile Card" width="100%"></picture>
 </p>
 
 <p align="center">
@@ -84,12 +84,12 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=a1fdcc50"><img src="contrib-light.svg?v=a05f6c4e" alt="Contribution graph"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=ae0ed1e9"><img src="contrib-light.svg?v=917f88f5" alt="Contribution graph"></picture>
 </p>
 
 ### 🏆 Trophies
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=2645b2ea"><img src="trophies-light.svg?v=5b2b0f19" alt="GitHub trophies" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=4d1ccb21"><img src="trophies-light.svg?v=fb98af47" alt="GitHub trophies" width="100%"></picture>
 
 ## 📡 Latest Activity
 
@@ -111,7 +111,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=be4a520a"><img src="quote-light.svg?v=5ad06151" alt="Dev quote of the day"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=e1a984e5"><img src="quote-light.svg?v=866ddb4d" alt="Dev quote of the day"></picture>
 </p>
 
 ---
