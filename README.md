@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=9f7d66e6"><img src="light_mode.svg?v=951c4887" alt="KunalScriptz Profile Card" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=06f9f490"><img src="light_mode.svg?v=0a68ff9b" alt="KunalScriptz Profile Card" width="100%"></picture>
 </p>
 
 <p align="center">
@@ -84,7 +84,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=acade6e4"><img src="contrib-light.svg?v=d813298f" alt="Contribution graph"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=e86ce372"><img src="contrib-light.svg?v=89443b6d" alt="Contribution graph"></picture>
 </p>
 
 ### 🏆 Trophies
@@ -111,7 +111,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=2f1b1696"><img src="quote-light.svg?v=02e82a98" alt="Dev quote of the day"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=5d2ab290"><img src="quote-light.svg?v=080df176" alt="Dev quote of the day"></picture>
 </p>
 
 ---
