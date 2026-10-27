@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=377f82ab"><img src="light_mode.svg?v=ef5f7c69" alt="KunalScriptz Profile Card" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=0f052753"><img src="light_mode.svg?v=2e608f6b" alt="KunalScriptz Profile Card" width="100%"></picture>
 </p>
 
 <p align="center">
@@ -79,12 +79,12 @@
 ## 📊 GitHub Stats
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg?v=d6e03574"><img src="streak-light.svg?v=a323ccd8" alt="GitHub streak"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg?v=d4558a74"><img src="streak-light.svg?v=4f09f233" alt="GitHub streak"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="top-langs-dark.svg?v=377bb5b8"><img src="top-langs-light.svg?v=747b6b35" alt="Top languages"></picture>
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=7d98e95c"><img src="contrib-light.svg?v=f787d24e" alt="Contribution graph"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=5686807e"><img src="contrib-light.svg?v=1aafb42e" alt="Contribution graph"></picture>
 </p>
 
 ### 🏆 Trophies
@@ -111,7 +111,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=4b5bb334"><img src="quote-light.svg?v=737e3ac3" alt="Dev quote of the day"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=be4a520a"><img src="quote-light.svg?v=5ad06151" alt="Dev quote of the day"></picture>
 </p>
 
 ---
