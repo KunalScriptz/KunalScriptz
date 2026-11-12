@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=12ad3919"><img src="light_mode.svg?v=316ae4fd" alt="KunalScriptz Profile Card" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg?v=e167c9cb"><img src="light_mode.svg?v=65b867d4" alt="KunalScriptz Profile Card" width="100%"></picture>
 </p>
 
 <p align="center">
@@ -79,17 +79,17 @@
 ## 📊 GitHub Stats
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg?v=c459a041"><img src="streak-light.svg?v=ba1b10b6" alt="GitHub streak"></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="top-langs-dark.svg?v=218c3807"><img src="top-langs-light.svg?v=cee5dfcb" alt="Top languages"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="streak-dark.svg?v=f2bd07f6"><img src="streak-light.svg?v=537baed2" alt="GitHub streak"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="top-langs-dark.svg?v=01d75ea2"><img src="top-langs-light.svg?v=b109a8e9" alt="Top languages"></picture>
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=9e731dad"><img src="contrib-light.svg?v=33fbf6d5" alt="Contribution graph"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="contrib-dark.svg?v=7d194262"><img src="contrib-light.svg?v=db49e881" alt="Contribution graph"></picture>
 </p>
 
 ### 🏆 Trophies
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=ee8a8817"><img src="trophies-light.svg?v=06a34c2f" alt="GitHub trophies" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="trophies-dark.svg?v=53aeb905"><img src="trophies-light.svg?v=603022b9" alt="GitHub trophies" width="100%"></picture>
 
 ## 📡 Latest Activity
 
@@ -111,7 +111,7 @@
 </p>
 
 <p align="center">
-<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=7c923bae"><img src="quote-light.svg?v=ea7910d7" alt="Dev quote of the day"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="quote-dark.svg?v=4b19040a"><img src="quote-light.svg?v=cfa2f331" alt="Dev quote of the day"></picture>
 </p>
 
 ---
