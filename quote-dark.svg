@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="170" viewBox="0 0 720 170" role="img" aria-label="Dev quote of the day">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="142" viewBox="0 0 720 142" role="img" aria-label="Dev quote of the day">
   <style>
     .bgrect { fill: #0d1117; stroke: #30363d; }
     .bar { fill: #bc8cff; }
@@ -8,8 +8,8 @@
     .hd { fill: #7d8590; font-size: 11px; letter-spacing: 3px; }
     text { font-family: 'JetBrains Mono','IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
   </style>
-  <rect class="bgrect" x="0.5" y="0.5" width="719" height="169" rx="10"/>
-  <rect class="bar" x="0" y="14" width="5" height="142" rx="2"/>
+  <rect class="bgrect" x="0.5" y="0.5" width="719" height="141" rx="10"/>
+  <rect class="bar" x="0" y="14" width="5" height="114" rx="2"/>
   <text x="694" y="26" text-anchor="end" class="hd">DEV QUOTE OF THE DAY</text>
-  <text x="26" y="62" class="mark">“</text><text x="60" y="78" class="q">Programs must be written for people to read, and only</text><text x="60" y="106" class="q">incidentally for machines to execute.</text><text x="694" y="148" text-anchor="end" class="by">— Harold Abelson</text>
+  <text x="26" y="62" class="mark">“</text><text x="60" y="78" class="q">Premature optimization is the root of all evil.</text><text x="694" y="120" text-anchor="end" class="by">— Donald Knuth</text>
 </svg>
