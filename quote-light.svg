@@ -11,5 +11,5 @@
   <rect class="bgrect" x="0.5" y="0.5" width="719" height="141" rx="10"/>
   <rect class="bar" x="0" y="14" width="5" height="114" rx="2"/>
   <text x="694" y="26" text-anchor="end" class="hd">DEV QUOTE OF THE DAY</text>
-  <text x="26" y="62" class="mark">“</text><text x="60" y="78" class="q">Premature optimization is the root of all evil.</text><text x="694" y="120" text-anchor="end" class="by">— Donald Knuth</text>
+  <text x="26" y="62" class="mark">“</text><text x="60" y="78" class="q">Simplicity is prerequisite for reliability.</text><text x="694" y="120" text-anchor="end" class="by">— Edsger W. Dijkstra</text>
 </svg>
